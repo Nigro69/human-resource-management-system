@@ -1,0 +1,38 @@
+.App {
+    overflow: auto;
+}
+
+.dwkit-formbuilder-header{
+    height: 80px;
+    margin: 0 20px;
+    user-select: none; 
+}
+
+.dwkit-formbuilder-header-logo{
+    margin-top:10px;
+}
+
+.builders {
+    display: flex;
+}
+
+.builders > div {
+    flex: 1;
+}
+
+.builders.split > div:nth-child(1) {
+    padding-right: 15px;
+}
+
+.builders.split > div:nth-child(2) {
+    padding-left: 15px;
+    border-left: 2px solid #1262E2;
+}
+
+.dwkit-formbuilder, .dwkit-formviewer, .dwkit-formbuilder-toolbox {
+    height: calc(100vh - 90px);
+}
+
+.dwkit-formviewer > div > div {
+    height: calc(100vh - 450px);
+}
