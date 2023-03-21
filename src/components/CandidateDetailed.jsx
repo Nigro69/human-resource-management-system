@@ -53,12 +53,12 @@ const CandidateDetailed = ({ func, detailed, id }) => {
     setisIntPending(true);
     try {
       const res = await axios.post(`/interview/`, {
-        "official_name": officail,
-        "meeting_link": meetlink,
-        "stage": stage,
-        "date": timeAndDate,
-        "candidate":id,
-        "official_image":"image"
+        official_name: officail,
+        meeting_link: meetlink,
+        stage: stage,
+        date: timeAndDate,
+        candidate: id,
+        official_image: "image",
       });
     } catch (error) {
       console.log(error.message);
@@ -176,31 +176,31 @@ const CandidateDetailed = ({ func, detailed, id }) => {
     }
   };
 
-  const updateInterview =async (id) =>{
+  const updateInterview = async (id) => {
     setupdateBtn(true);
     setintid(id);
     try {
       const res = await axios.get(`/interview/${id}`);
-    setofficail(res.data.official_name);
-    setstage(res.data.stage);
-    setmeetlink(res.data.meeting_link);
-    settimeAndDate(res.data.date);
+      setofficail(res.data.official_name);
+      setstage(res.data.stage);
+      setmeetlink(res.data.meeting_link);
+      settimeAndDate(res.data.date);
     } catch (error) {
       console.log(error.message);
     }
     setmodal2(true);
-  }
+  };
 
-  const updateCurrInterview =async () =>{
+  const updateCurrInterview = async () => {
     setisIntPending(true);
     try {
       const res = await axios.put(`/interview/${intid}`, {
-        "official_name": officail,
-        "meeting_link": meetlink,
-        "stage": stage,
-        "date": timeAndDate,
-        "candidate":id,
-        "official_image":"image"
+        official_name: officail,
+        meeting_link: meetlink,
+        stage: stage,
+        date: timeAndDate,
+        candidate: id,
+        official_image: "image",
       });
     } catch (error) {
       console.log(error.message);
@@ -213,7 +213,7 @@ const CandidateDetailed = ({ func, detailed, id }) => {
     settimeAndDate(null);
     setintid(null);
     setupdateBtn(false);
-  }
+  };
 
   useEffect(() => {
     getMyResult();
@@ -536,12 +536,14 @@ const CandidateDetailed = ({ func, detailed, id }) => {
             </div>
           </div>
 
-          <div>
-            <Link to="/applicantval"
-                  className="font-bold">
+          <Link
+            to="/applicantval"
+            className="font-bold text-white hover:text-white"
+          >
+            <div className="m-4 bg-blue-500 text-white p-4 max-w-max rounded-md">
               Generate Offer Letter
-            </Link>
-          </div>
+            </div>
+          </Link>
 
           <div className="border rounded-md my-4 px-14 py-4">
             <div className="flex justify-between">
@@ -817,66 +819,75 @@ const CandidateDetailed = ({ func, detailed, id }) => {
               + Add Schedule Interview
             </button>
           </div>
-          {!isIntPending ? <div className="space-y-2">
-            {interviewData &&
-              interviewData.map((data) => (
-                <div key={data.id} className="my-5">
-                  <div className="flex justify-between my-1">
-                    <div className="font-bold text-sm text-gray-500">
-                      {data.date}
+          {!isIntPending ? (
+            <div className="space-y-2">
+              {interviewData &&
+                interviewData.map((data) => (
+                  <div key={data.id} className="my-5">
+                    <div className="flex justify-between my-1">
+                      <div className="font-bold text-sm text-gray-500">
+                        {data.date}
+                      </div>
+                      <div className="flex place-items-center gap-4">
+                        <AiOutlineEdit
+                          onClick={() => updateInterview(data.id)}
+                          className="cursor-pointer"
+                        />
+                        <AiOutlineDelete
+                          onClick={() => deleteInterview(data.id)}
+                          className="cursor-pointer"
+                        />
+                      </div>
                     </div>
-                    <div className="flex place-items-center gap-4">
-                      <AiOutlineEdit 
-                      onClick={()=>updateInterview(data.id)}
-                      className="cursor-pointer" />
-                      <AiOutlineDelete
-                        onClick={() => deleteInterview(data.id)}
-                        className="cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                  <div className="border grid grid-cols-4 place-items-center rounded-md border-l-4 border-l-[#FFD700] px-4 py-2">
-                    <div className="flex place-items-center">
-                      <img
-                        className="h-8 w-8 rounded-full object-cover"
-                        src="data:image/jpeg;base64,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"
-                        alt=""
-                      />
-                      <div className="pl-4">
+                    <div className="border grid grid-cols-4 place-items-center rounded-md border-l-4 border-l-[#FFD700] px-4 py-2">
+                      <div className="flex place-items-center">
+                        <img
+                          className="h-8 w-8 rounded-full object-cover"
+                          src="data:image/jpeg;base64,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"
+                          alt=""
+                        />
+                        <div className="pl-4">
+                          <div className="font-bold text-sm">
+                            {data.official_name}
+                          </div>
+                          <div className="font-bold text-sm text-gray-500">
+                            {data.stage}
+                          </div>
+                        </div>
+                      </div>
+                      <div>
                         <div className="font-bold text-sm">
-                          {data.official_name}
+                          03:00 - 04:00 PM
                         </div>
                         <div className="font-bold text-sm text-gray-500">
-                          {data.stage}
+                          1 Hour Interview
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold text-sm">03:00 - 04:00 PM</div>
-                      <div className="font-bold text-sm text-gray-500">
-                        1 Hour Interview
+                      <div>
+                        <div className="font-bold text-sm text-blue-500 cursor-pointer">
+                          {data.meeting_link}
+                        </div>
+                        <div className="font-bold text-sm text-gray-500">
+                          Scheduled by -{" "}
+                          <div className="font-bold text-sm"> Yash Barman</div>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="font-bold text-sm text-blue-500 cursor-pointer">
-                        {data.meeting_link}
+                      <div>
+                        <button className="border border-green-800 bg-green-800 text-white font-bold text-sm px-4 py-1 rounded-md">
+                          Submit Feedback
+                        </button>
                       </div>
-                      <div className="font-bold text-sm text-gray-500">
-                        Scheduled by -{" "}
-                        <div className="font-bold text-sm"> Yash Barman</div>
-                      </div>
-                    </div>
-                    <div>
-                      <button className="border border-green-800 bg-green-800 text-white font-bold text-sm px-4 py-1 rounded-md">
-                        Submit Feedback
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
-          </div>:<div className="grid place-items-center h-96 bg-white">
-          <div><ClockLoader color="#FFD700" /></div>
-        </div>}
+                ))}
+            </div>
+          ) : (
+            <div className="grid place-items-center h-96 bg-white">
+              <div>
+                <ClockLoader color="#FFD700" />
+              </div>
+            </div>
+          )}
         </div>
         <button
           className="bg-gray-300 py-2 fixed top-2/4 left-0 my-auto"
@@ -1121,13 +1132,21 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   />
                 </div>
                 <div className="py-2 flex">
-                  {!updateBtn ? <button  onClick={scheduleInterview}  className=" justify-end font-bold text-sm text-white bg-green-800 px-6 py-2 rounded-md">
-                    Schedule
-                  </button>:
-                  <button onClick={()=>updateCurrInterview()} className=" justify-end font-bold text-sm text-white bg-green-800 px-6 py-2 rounded-md">
-                  Update Interview
-                </button>
-                  }
+                  {!updateBtn ? (
+                    <button
+                      onClick={scheduleInterview}
+                      className=" justify-end font-bold text-sm text-white bg-green-800 px-6 py-2 rounded-md"
+                    >
+                      Schedule
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => updateCurrInterview()}
+                      className=" justify-end font-bold text-sm text-white bg-green-800 px-6 py-2 rounded-md"
+                    >
+                      Update Interview
+                    </button>
+                  )}
                   <button
                     onClick={() => setmodal2(false)}
                     className="font-bold text-sm text-gray-500 px-6 py-2 rounded-md hover:bg-gray-100"
