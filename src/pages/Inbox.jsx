@@ -7,17 +7,23 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
-import { candidatesData, chats } from "../data/dummy";
+import {  chats } from "../data/dummy";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
 import { useNavigate } from "react-router-dom";
 import { DefaultEditor } from "react-simple-wysiwyg";
+import axios from "../axios";
+import {RotateLoader} from "react-spinners"
+import { auth } from "../firebase/config";
 
 function Inbox() {
   const [tab, settab] = useState(1);
+  const [apiData, setapiData] = useState([]);
+  const [chatsData, setchatsData] = useState([]);
+  const [isPending, setisPending] = useState(true);
   const [detailedId, setdetailedId] = useState(1);
-  const [messages, setmessages] = useState([]);
-  const [filteredDta, setfilteresData] = useState(candidatesData);
+  const [messages, setmessages] = useState(null);
+  const [filteredDta, setfilteresData] = useState(apiData);
   const [inputMsg, setinputMsg] = useState(null);
   const [search, setsearch] = useState("");
   const [file, setFile] = useState(null);
@@ -25,32 +31,8 @@ function Inbox() {
   const [tTab, settTab] = useState(1);
   const [content, setcontent] = useState(null);
   const [title, settitle] = useState("");
-  const [tempDataArray, settempDataArray] = useState([
-    {
-      id: 1,
-      title: "New employee announcement",
-      body: `<p style="box-sizing: border-box; margin-bottom: 20px;"><ol><li>Hi ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      }!</li></ol><div><br></div><div>We're thrilled to have ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      } join our team as SDE role. ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      } has 2 of experience working in fawr Bsol and we can't wait to see what they'll bring to our team.<br></div><div><br></div><div>Outside of ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      }'s professional experience, they also enjoy [List activities, hobbies, etc.]. Make sure to give ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      } a big fawr Bsol welcome the next time you see them. Welcome to the team, ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      }!</div></p><div>Kindly,&nbsp;</div><div><div><br></div><div>HR</div></div>`,
-    },
-    {
-      id: 2,
-      title: "Candidate Rejection",
-      body: `<div>Dear ${
-        candidatesData[detailedId - 1] && candidatesData[detailedId - 1].name
-      },</div><div><br></div><div>Thank you for taking the time to meet with our team about the SDE Intern role at Fawr Bsol. It was a pleasure to learn more about your skills and accomplishments.</div><div>Unfortunately, our team did not select you for further consideration.</div><div>I would like to note that competition for jobs at Fawr Bsol is always strong and that we often have to make difficult choices between many high-caliber candidates. Now that we've had the chance to know more about you, we will be keeping your resume on file for future openings that better fit your profile.</div><div>I am happy to answer your questions if you would like any specific feedback about your application or interviews.</div><div>Thanks again for your interest in Fawr Bsol&nbsp; and best of luck with your job search.</div><div><br></div><div>Visit our <a href="https://www.fawrtech.com/careers">career site</a> for more opportunities.</div><div><br></div><div>Regards,</div><div><br></div><div>HR</div>`,
-    },
-  ]);
+  const [tempDataArray, settempDataArray] = useState([]);
+  const [chatPending, setchatPending] = useState(true);
 
   const navigate = useNavigate();
 
@@ -58,45 +40,123 @@ function Inbox() {
   const timeAgo = new TimeAgo("en-US");
 
   useEffect(() => {
-    file && setinputMsg(file);
+    if(file){
+      // let msg = {
+      //   id: Math.floor(Math.random() * 1000 + 1),
+      //   body: `<a href=${file}><div><p>&nbsp; <strong style="font-size: 18px;">Document</strong><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP64kr8u-sTKflOnGE28_tnrE4xHlMHzHHTA&amp;usqp=CAU" alt="" width="49" height="51" style="float: left;"></p></div></a>`,
+      //   timeStamp: Date.now(),
+      //   myMsg: true,
+      // };
+      // setmessages([...messages, msg]);
+      sendFile();
+    }
+    
   }, [file]);
 
-  useEffect(() => {
-    let object = chats.find((chat) => chat.chatId - 1 === detailedId);
-    setmessages(object.messages);
-  }, [detailedId]);
+  const sendFile = async () => {
+    try {
+      const res = await axios.post("/chats/",{
+        "profile_id": auth.currentUser.uid + detailedId,
+        "messsage": `<a href=${file}><div><p>&nbsp; <strong style="font-size: 18px;">Document</strong><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP64kr8u-sTKflOnGE28_tnrE4xHlMHzHHTA&amp;usqp=CAU" alt="" width="49" height="51" style="float: left;"></p></div></a>`,
+        "check_user": true,
+        "time_stamp":Date.now()
+      });
+      console.log(res.data);
+      getChatsResult();
+      setFile(null);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
-    const result = candidatesData.filter((itr) => {
+    
+    settempDataArray([{
+      id: 1,
+      title: `New employee announcement ${apiData[detailedId - 1] && apiData[detailedId - 1].name}`,
+      body: `<p style="box-sizing: border-box; margin-bottom: 20px;"><ol><li>Hi ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      }!</li></ol><div><br></div><div>We're thrilled to have ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      } join our team as SDE role. ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      } has 2 of experience working in fawr Bsol and we can't wait to see what they'll bring to our team.<br></div><div><br></div><div>Outside of ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      }'s professional experience, they also enjoy [List activities, hobbies, etc.]. Make sure to give ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      } a big fawr Bsol welcome the next time you see them. Welcome to the team, ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      }!</div></p><div>Kindly,&nbsp;</div><div><div><br></div><div>HR</div></div>`,
+    },
+    {
+      id: 2,
+      title: "Candidate Rejection",
+      body: `<div>Dear ${
+        apiData[detailedId - 1] && apiData[detailedId - 1].name
+      },</div><div><br></div><div>Thank you for taking the time to meet with our team about the SDE Intern role at Fawr Bsol. It was a pleasure to learn more about your skills and accomplishments.</div><div>Unfortunately, our team did not select you for further consideration.</div><div>I would like to note that competition for jobs at Fawr Bsol is always strong and that we often have to make difficult choices between many high-caliber candidates. Now that we've had the chance to know more about you, we will be keeping your resume on file for future openings that better fit your profile.</div><div>I am happy to answer your questions if you would like any specific feedback about your application or interviews.</div><div>Thanks again for your interest in Fawr Bsol&nbsp; and best of luck with your job search.</div><div><br></div><div>Visit our <a href="https://www.fawrtech.com/careers">career site</a> for more opportunities.</div><div><br></div><div>Regards,</div><div><br></div><div>HR</div>`,
+    },
+  ])
+  }, [detailedId,apiData]);
+
+  useEffect(() => {
+    const result = apiData && apiData.filter((itr) => {
       return itr.name.toLowerCase().match(search.toLowerCase());
     });
     setfilteresData(result);
 
     if (search.length === 0) {
-      setfilteresData(candidatesData);
+      setfilteresData(apiData);
     }
-  }, [search, filteredDta]);
+  }, [search, filteredDta,isPending]);
 
-  const handleSubmit = () => {
-    let msg = {
-      id: Math.floor(Math.random() * 1000 + 1),
-      body: inputMsg,
-      timeStamp: Date.now(),
-      myMsg: true,
-    };
-    setmessages([...messages, msg]);
+  
+  console.log(!chatPending && messages);
+
+  // const handleSubmit = () => {
+  //   let msg = {
+  //     id: Math.floor(Math.random() * 1000 + 1),
+  //     body: inputMsg,
+  //     timeStamp: Date.now(),
+  //     myMsg: true,
+  //   };
+  //   setmessages([...messages, msg]);
+  //   setinputMsg("");
+  // };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await axios.post("/chats/",{
+        "profile_id": auth.currentUser.uid + detailedId,
+        "messsage": inputMsg,
+        "check_user": true,
+        "time_stamp":Date.now()
+      });
+      console.log(res.data);
+      getChatsResult();
+    } catch (error) {
+      console.log(error.message);
+    }
     setinputMsg("");
   };
 
   const sendTemplate = (id) => {
-    let msg = {
-      id: Math.floor(Math.random() * 1000 + 1),
-      body: tempDataArray[id-1].body,
-      timeStamp: Date.now(),
-      myMsg: true,
-    };
-    setmessages([...messages, msg]);
+    sendTemplateMsg(id);
     setmodal(false);
+  };
+
+  const sendTemplateMsg = async (id) => {
+    try {
+      const res = await axios.post("/chats/",{
+        "profile_id": auth.currentUser.uid + detailedId,
+        "messsage": tempDataArray[id-1].body,
+        "check_user": true,
+        "time_stamp":Date.now()
+      });
+      console.log(res.data);
+      getChatsResult();
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const createTemplate = () =>{
@@ -111,8 +171,42 @@ function Inbox() {
     setcontent(null);
   }
 
+  const getMyResult = async () => {
+    try {
+      const res = await axios.get("/profile/");
+      setapiData(res.data);
+      setisPending(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const getChatsResult = async () => {
+    try {
+      const res = await axios.get("/chats/");
+      setchatsData(res.data);
+      let arrCopy =[];
+      res.data.forEach(data=>{
+      if(data.profile_id == (auth.currentUser && auth.currentUser.uid) + detailedId){
+        arrCopy.push(data);
+      }
+    })
+    setmessages([...arrCopy]);
+    } catch (error) {
+      console.log(error.message);
+    }
+    setchatPending(false);
+  };
+
+  useEffect(() => {
+    setisPending(true);
+    setchatPending(true);
+    getMyResult();
+    getChatsResult();
+  },[detailedId]);
+
   return (
     <div className="bg-gray-200 ">
+      <div className="flex justify-between">
       <div className="flex gap-5  px-6 pt-4">
         <button
           onClick={() => settab(1)}
@@ -131,6 +225,8 @@ function Inbox() {
           Work Inbox
         </button>
       </div>
+      
+      </div>
       <div className="relative h-[548px] w-full ">
         <div className="absolute inset-y-0 left-0 w-72 h-full bg-white overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700]  scrollbar-track-white">
           <div className="flex sticky top-0 bg-white place-items-center border px-2 py-1">
@@ -140,13 +236,13 @@ function Inbox() {
             <input
               type="text"
               placeholder="Search..."
-              className="p-2"
+              className="p-2 focus:outline-0"
               value={search}
               onChange={(e) => setsearch(e.target.value)}
             />
           </div>
           <div className="">
-            {filteredDta.map((candidate) => (
+            {!isPending && filteredDta.map((candidate) => (
               <div
                 key={candidate.id}
                 onClick={() => setdetailedId(candidate.id)}
@@ -159,7 +255,7 @@ function Inbox() {
                 <div className="grid place-items-center w-[40px]">
                   <img
                     className="h-10 w-10 rounded-full object-cover"
-                    src={candidate.imgUrl}
+                    src={candidate.image}
                     alt=""
                   />
                 </div>
@@ -171,7 +267,7 @@ function Inbox() {
                     </div>
                   </div>
                   <div className="font-semibold text-gray-500 text-sm">
-                    {candidate.jobTitle}
+                    {candidate.job_title}
                   </div>
                   <div className="font-semibold text-gray-500 text-sm">
                     message
@@ -186,8 +282,8 @@ function Inbox() {
             <div>
               <div className="font-bold text-lg">
                 Your application for Job:
-                {candidatesData[detailedId - 1] &&
-                  candidatesData[detailedId - 1].jobTitle}{" "}
+                {apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].job_title}{" "}
               </div>
               <div className="font-bold text-gray-500 flex place-items-center">
                 Status:{" "}
@@ -198,30 +294,30 @@ function Inbox() {
             </div>
             <div className="grid place-items-center">
               <button
-                onClick={() => navigate("/email")}
+                onClick={() => navigate("/inbox/email",{state:{name:apiData[detailedId - 1] && apiData[detailedId - 1].name,email:apiData[detailedId - 1] && apiData[detailedId - 1].email}})}
                 className="border border-gray-500 rounded-md text-sm font-bold px-6 py-2"
               >
-                Email
+                Send Email
               </button>
             </div>
           </div>
           <div className=" absolute top-[75px] bottom-[114px] w-full p-2 overflow-auto">
-            {messages.map((message) => (
+            {messages && messages.map((message) => (
               <div
                 key={message.id}
                 className={`space-y-1 my-1 grid ${
-                  message.myMsg ? "justify-items-end" : "justify-items-start"
+                  message.check_user ? "justify-items-end" : "justify-items-start"
                 }`}
               >
                 <div
                   className={`p-2 rounded-lg shadow-lg inline-block max-w-sm  ${
-                    message.myMsg ? "bg-green-100 text-green-800" : "bg-white"
-                  }`}
+                    message.check_user? "bg-green-100 text-green-800" : "bg-white"}`}
                 >
-                  {<div dangerouslySetInnerHTML={{ __html: message.body }} />}
+                  {<div dangerouslySetInnerHTML={{ __html: message.messsage }} />}
                 </div>
                 <div className="text-sm ">
-                  {timeAgo.format(message.timeStamp)}
+                  {timeAgo.format(message.time_stamp)}
+                  {/* {message.time_stamp} */}
                 </div>
               </div>
             ))}
@@ -253,10 +349,6 @@ function Inbox() {
                     alt="cover"
                   />
                 </label>
-                {/* <div>
-                  <input className="hidden" type="file" />
-                  <AiOutlineLink className="text-gray-500 bg-gray-200 p-2 h-8 w-8 cursor-pointer rounded-full" />
-                </div> */}
                 <AiFillAudio className="text-gray-500 bg-gray-200 p-2 h-8 w-8 cursor-pointer rounded-full" />
                 <BsEmojiSmile className="text-gray-500 bg-gray-200 p-2 h-8 w-8 cursor-pointer rounded-full" />
                 <div>
@@ -285,21 +377,23 @@ function Inbox() {
               <img
                 className="h-20 w-20 rounded-full object-cover"
                 src={
-                  candidatesData[detailedId - 1] &&
-                  candidatesData[detailedId - 1].imgUrl
+                  apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].image
                 }
                 alt=""
               />
             </div>
             <div className="text-lg font-bold tracking-widest">
-              {candidatesData[detailedId - 1] &&
-                candidatesData[detailedId - 1].name}
+              {apiData[detailedId - 1] &&
+                apiData[detailedId - 1].name}
             </div>
             <div className="flex gap-4">
               <div className="border rounded-full bg-green-100 text-green-800 border-green-800 font-semibold text-xs px-2 py-1">
-                Active
+              {apiData[detailedId - 1] &&
+                apiData[detailedId - 1].status}
               </div>
-              <div className="font-semibold text-gray-500">Location</div>
+              <div className="font-semibold text-gray-500">{apiData[detailedId - 1] &&
+                apiData[detailedId - 1].origin}</div>
             </div>
             <div className="font-bold text-gray-500 text-sm cursor-pointer">
               View Profile
@@ -312,27 +406,28 @@ function Inbox() {
               </div>
               <div className="font-bold">
                 Job:
-                {candidatesData[detailedId - 1] &&
-                  candidatesData[detailedId - 1].jobTitle}
+                {apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].job_title}
               </div>
             </div>
             <div>
               <div className="font-bold text-gray-500 text-sm">Stage:</div>
               <div className="font-bold">
-                {candidatesData[detailedId - 1] &&
-                  candidatesData[detailedId - 1].stage}
+                {apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].stage}
               </div>
             </div>
           </div>
           <div className="border p-4 grid place-items-center space-y-2">
             <div className="font-bold text-gray-500 flex gap-2 place-items-center">
               <AiOutlineMail />
-              {candidatesData[detailedId - 1] &&
-                candidatesData[detailedId - 1].email}
+              {apiData[detailedId - 1] &&
+                apiData[detailedId - 1].email}
             </div>
             <div className="font-bold text-gray-500 flex gap-2 place-items-center">
               <AiOutlinePhone />
-              +91 6261630049
+              {apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].phonenumber}
             </div>
           </div>
           <div className="border p-4 space-y-4">

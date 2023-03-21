@@ -1,11 +1,33 @@
-import React, { useState } from "react";
+import axios from "../axios";
+import React, { useEffect, useState } from "react";
 import {  AiOutlineMail } from "react-icons/ai";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { Link } from "react-router-dom";
-import { employeeData } from "../data/dummy";
+import { ScaleLoader } from "react-spinners";
 
 const EmployeeDetailed = ({ func, detailed, id }) => {
   const [tabs, settabs] = useState(1);
+  const [isPending, setisPending] = useState(false);
+  const [apiData, setapiData] = useState({});
+  const getMyResult = async () => {
+    try {
+      const res = await axios.get(`/employee/${id}`);
+      console.log(res.data);
+      setapiData(res.data);
+      setisPending(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getMyResult();
+    setisPending(true);
+  },[id]);
+
+  useEffect(() => {
+  }, [isPending])
+  
 
   return (
     <div
@@ -20,36 +42,39 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
           detailed ? "translate-x-0" : "translate-x-full"
         } duration-700 ease-in-out`}
       >
+        {isPending && <div className="grid place-items-center z-50 fixed bottom-0 left-0 right-0 top-0 bg-gray-500 bg-opacity-60">
+        <div><ScaleLoader  color="#FFD700" /></div>
+      </div>}
         <div className="flex z-50 sticky top-0 inset-x-0 justify-between place-items-center p-5 bg-gray-200">
           <div className="flex place-items-center">
             <div>
               <img
                 className="h-20 w-20 rounded-full object-cover"
-                src={employeeData[id - 1] && employeeData[id - 1].imgUrl}
+                src={apiData && apiData.image}
                 alt=""
               />
             </div>
 
             <div className="px-4">
               <div className="font-bold tracking-widest text-lg">
-                {employeeData[id - 1] && employeeData[id - 1].name}
+                {apiData && apiData.name}
               </div>
               <div className="font-bold uppercase text-sm flex place-items-center text-gray-500">
-                {employeeData[id - 1] && 
+                {apiData && 
                     <div className={`
-                    ${employeeData[id - 1].status==="Active" && "border border-green-600 px-2 py-1 bg-green-200 rounded-md text-xs font-bold text-green-600" }
-                    ${employeeData[id - 1].status==="Inactive" && "border border-red-600 px-2 py-1 bg-red-200 bg rounded-md text-xs font-bold text-red-600" }
-                    ${employeeData[id - 1].status==="Unverified" && "border border-orange-600 px-2 bg-orange-200 bg py-1 rounded-md text-xs font-bold text-orange-600" }
+                    ${apiData.status==="Active" && "border border-green-600 px-2 py-1 bg-green-200 rounded-md text-xs font-bold text-green-600" }
+                    ${apiData.status==="Inactive" && "border border-red-600 px-2 py-1 bg-red-200 bg rounded-md text-xs font-bold text-red-600" }
+                    ${apiData.status==="Unverified" && "border border-orange-600 px-2 bg-orange-200 bg py-1 rounded-md text-xs font-bold text-orange-600" }
                     `}>
-                      {employeeData[id - 1] && employeeData[id - 1].status}
+                      {apiData && apiData.status}
                       {" "}
                     </div>
                 } - 
-                <div>{" "}{employeeData[id - 1] && employeeData[id - 1].team}</div>
+                <div>{" "}{apiData && apiData.team}</div>
                 
               </div>
               <div className="font-bold  text-sm text-gray-500">
-               Hired Date {employeeData[id - 1] && employeeData[id - 1].hiredDate}
+               Hired Date {apiData && apiData.hired_date}
               </div>
             </div>
           </div>
@@ -91,13 +116,13 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
               <div>
                 <div className="font-bold text-sm text-gray-500">Name</div>
                 <div className="font-bold">
-                  {employeeData[id - 1] && employeeData[id - 1].name}
+                  {apiData && apiData.name}
                 </div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Email</div>
                 <div className="font-bold">
-                  {employeeData[id - 1] && employeeData[id - 1].email}
+                  {apiData && apiData.email}
                 </div>
               </div>
               <div>
@@ -106,27 +131,27 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Phone</div>
-                <div className="font-bold">+91 6261630049</div>
+                <div className="font-bold">{apiData && apiData.phone}</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
                   Candidate Id
                 </div>
-                <div className="font-bold">TM3-CFP</div>
+                <div className="font-bold">{apiData && apiData.id}</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Website</div>
                 <Link
-                  to="https://yash-portflio-3010.vercel.app/"
+                  to="www.google.com"
                   className="font-bold"
                 >
-                  https://yash-portflio-3010.vercel.app/
+                  www.google.com
                 </Link>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Address</div>
                 <div className="font-bold">
-                  882 Coventry Court Gulfport USA Mississippi, 39501
+                {apiData && apiData.address}
                 </div>
               </div>
             </div>
@@ -141,13 +166,13 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                 <div className="font-bold text-sm text-gray-500">
                   Current Job Title
                 </div>
-                <div className="font-bold">Ux/UI Designer</div>
+                <div className="font-bold">{apiData && apiData.job_title}</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
                   Higest Qualification Held
                 </div>
-                <div className="font-bold">Bachelors in Engineering</div>
+                <div className="font-bold">{apiData && apiData.highest_qualification}</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
@@ -165,29 +190,25 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                 <div className="font-bold text-sm text-gray-500">
                   Experience in years
                 </div>
-                <div className="font-bold">3 years</div>
+                <div className="font-bold">{apiData && apiData.experince} years</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Linkedin</div>
                 <Link
-                  to="https://in.linkedin.com/in/yash-barman-20185921a?trk=public_profile_browsemap"
+                  to="www.google.com"
                   className="font-bold"
                 >
-                  https://in.linkedin.com/in/yash-barman-20185921a?trk=public_profile_browsemap
+                  www.google.com
                 </Link>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Skills</div>
                 <div className="flex my-2 gap-2">
-                  <div className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500">
-                    UI Design
-                  </div>
-                  <div className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500">
-                    React
-                  </div>
-                  <div className="rounded-full bg-gray-300 font-bold text-sm p-2 text-md text-gray-500">
-                    Tailwind CSS
-                  </div>
+                {apiData.skills && apiData.skills.map(skill=>(
+                  <div key={skill.id} className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500">
+                  {skill}
+                </div>
+                ))}
                 </div>
               </div>
             </div>

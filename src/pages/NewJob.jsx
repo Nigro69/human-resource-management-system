@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsChevronDown } from "react-icons/bs";
 import { IoMdCloseCircle } from "react-icons/io";
 import { MdDelete } from "react-icons/md";
 import { DefaultEditor } from "react-simple-wysiwyg";
 import Myfb from "../components/formbuilder/Myfb";
 import { scoreCardData } from "../data/dummy";
+import { auth } from "../firebase/config";
+import axios from "../axios";
 
 const NewJob = () => {
   const [step, setstep] = useState(1);
-  const [department, setdepartment] = useState(0);
+  const [department, setdepartment] = useState(null);
   const [dropdepartment, setdropdepartment] = useState(false);
-  const [jobType, setjobType] = useState(0);
+  const [jobType, setjobType] = useState(null);
   const [dropjobType, setdropjobType] = useState(false);
   const [drophr, setdrophr] = useState(false);
   const [hr, sethr] = useState(0);
@@ -18,7 +20,7 @@ const NewJob = () => {
   const [currency, setcurrency] = useState("0");
   const [dropcurrency, setdropcurrency] = useState(false);
   const [submit, setsubmit] = useState(false);
-  const [location, setlocation] = useState(0);
+  const [location, setlocation] = useState(null);
   const [content, setcontent] = useState("");
   const [newPipeline, setnewPipeline] = useState("");
   const [pipeline, setpipeline] = useState([]);
@@ -31,6 +33,8 @@ const NewJob = () => {
   const [MOTIVATIONAL, setMOTIVATIONAL] = useState(0);
   const [cardCategory, setcardCategory] = useState("");
   const [dropCategory, setdropCategory] = useState(false);
+  const [title, settitle] = useState("");
+  const [experience, setexperience] = useState("");
 
   const [taggs, setTags] = useState([]);
   const addTags = (event) => {
@@ -58,6 +62,38 @@ const NewJob = () => {
 
     setpipeline([...pipeline, element]);
     setnewPipeline("");
+  };
+
+  const getMyResult = async () => {
+    try {
+      const res = await axios.post("/jobs/",{
+        "user_id": `${auth.currentUser && auth.currentUser.uid}`,
+        "category": department,
+        "title": title,
+        "description": content,
+        "attachments": "Links",
+        "application_form": "ejbguerbgu",
+        "department": department,
+        "experience": experience,
+        "currency": "ereh",
+        "expectedSalary": "ergerg",
+        "scorecard": "rgergergerg",
+        "hiringpipeline": "wrgegergreg",
+        "location": location,
+        "type": jobType,
+        "status": "Published",
+        "publishedDate": "2023-03-08",
+        "skills": [
+            1
+        ],
+        "candidates": [
+            1
+        ]
+    });
+      console.log(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   return (
@@ -88,7 +124,7 @@ const NewJob = () => {
           )}
           {step === 4 && (
             <button
-              onClick={() => setsubmit(true)}
+              onClick={() => {setsubmit(true); getMyResult();}}
               className="bg-green-800 text-sm text-white rounded-md px-8 py-2 font-semibold"
             >
               Submit
@@ -201,6 +237,8 @@ const NewJob = () => {
                   <input
                     className="border-2 my-2 w-3/4 p-2 rounded-md"
                     placeholder="Enter your title"
+                    value={title}
+                    onChange={(e)=>settitle(e.target.value)}
                     type="text"
                   />
                   <div className="font-bold mt-5">Job Description</div>
@@ -214,7 +252,7 @@ const NewJob = () => {
                     <div className="relative">
                       <div className="font-bold">Department</div>
                       <div onClick={() => setdropdepartment(!dropdepartment)}>
-                        {department === 0 ? (
+                        {department === null ? (
                           <div className="flex justify-between p-2 place-items-center bg-gray-100 border rounded-md">
                             <div className="font-bold text-gray-400">
                               Select Department
@@ -236,7 +274,7 @@ const NewJob = () => {
                         <div className="absolute z-10 border-2 w-full bg-white grid grid-cols-1 divide-y">
                           <div
                             onClick={() => {
-                              setdepartment(1);
+                              setdepartment("Development");
                               setdropdepartment(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -245,7 +283,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setdepartment(2);
+                              setdepartment("Design");
                               setdropdepartment(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -254,7 +292,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setdepartment(3);
+                              setdepartment("Marketing");
                               setdropdepartment(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -263,7 +301,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setdepartment(4);
+                              setdepartment("Finance");
                               setdropdepartment(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -329,7 +367,7 @@ const NewJob = () => {
                     <div className="relative">
                       <div className="font-bold">Job Type</div>
                       <div onClick={() => setdropjobType(!dropjobType)}>
-                        {jobType === 0 ? (
+                        {jobType === null ? (
                           <div className="flex justify-between p-2 place-items-center bg-gray-100 border rounded-md">
                             <div className="font-bold text-gray-400">
                               Select HR Manager
@@ -351,7 +389,7 @@ const NewJob = () => {
                         <div className="absolute w-full z-10 border-2 bg-white grid grid-cols-1 divide-y">
                           <div
                             onClick={() => {
-                              setjobType(1);
+                              setjobType("Full-Time");
                               setdropjobType(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -360,7 +398,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setjobType(2);
+                              setjobType("Part-Time");
                               setdropjobType(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -369,7 +407,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setjobType(3);
+                              setjobType("InternShip");
                               setdropjobType(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -385,7 +423,7 @@ const NewJob = () => {
                         {location === 0 ? (
                           <div className="flex justify-between p-2 place-items-center bg-gray-100 border rounded-md">
                             <div className="font-bold text-gray-400">
-                              Select HR Manager
+                              Select Location
                             </div>
                             <div>
                               <BsChevronDown />
@@ -404,7 +442,7 @@ const NewJob = () => {
                         <div className="absolute w-full z-10 border-2 bg-white grid grid-cols-1 divide-y">
                           <div
                             onClick={() => {
-                              setlocation(1);
+                              setlocation("Banglore");
                               setdroplocation(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -413,7 +451,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setlocation(1);
+                              setlocation("Pune");
                               setdroplocation(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -422,7 +460,7 @@ const NewJob = () => {
                           </div>
                           <div
                             onClick={() => {
-                              setlocation(1);
+                              setlocation("Hyderabad");
                               setdroplocation(false);
                             }}
                             className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
@@ -437,6 +475,8 @@ const NewJob = () => {
                       <input
                         className="border w-full bg-gray-100 my-2 p-2 rounded-md"
                         placeholder="Enter expericence"
+                        value={experience}
+                        onChange={(e)=>setexperience(e.target.value)}
                         type="number"
                       />
                     </div>

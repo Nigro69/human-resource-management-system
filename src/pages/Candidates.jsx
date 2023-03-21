@@ -1,18 +1,23 @@
-import React, { useEffect, useState } from 'react'
-import DataTable from 'react-data-table-component';
-import { BsThreeDots } from 'react-icons/bs';
-import CandidateDetailed from '../components/CandidateDetailed';
-import Search from '../components/Search';
-import { candidatesData } from "../data/dummy";
+import React, { useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { BsThreeDots } from "react-icons/bs";
+import { useNavigate } from "react-router-dom";
+import CandidateDetailed from "../components/CandidateDetailed";
+import Search from "../components/Search";
+import {RotateLoader} from "react-spinners"
+import axios from "../axios";
 
 const Candidates = () => {
-
   const [id, setid] = useState(0);
-  const clicked =(id)=>{
+  const [isPending, setisPending] = useState(false);
+  const [apiData, setapiData] = useState([]);
+  const clicked = (id) => {
     setdetailed(true);
     console.log(id);
     setid(id);
-  }
+  };
+
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -21,7 +26,7 @@ const Candidates = () => {
         <div>
           <img
             className="h-8 w-8 rounded-full object-cover"
-            src={row.imgUrl}
+            src={row.image}
             alt=""
           />
         </div>
@@ -57,7 +62,7 @@ const Candidates = () => {
     },
     {
       name: "Applied Date",
-      selector: (row) => row.appliedData,
+      selector: (row) => row.appled_date,
       sortable: true,
       style: {
         fontWeight: "bold",
@@ -77,7 +82,10 @@ const Candidates = () => {
       name: "",
       cell: (row) => (
         <button>
-          <BsThreeDots  onClick={()=>clicked(row.id)} className="p-1 h-5 w-5 bg-gray-300 rounded-full" />
+          <BsThreeDots
+            onClick={() => clicked(row.id)}
+            className="p-1 h-5 w-5 bg-gray-300 rounded-full"
+          />
         </button>
       ),
       center: true,
@@ -108,44 +116,78 @@ const Candidates = () => {
   };
 
   const [search, setsearch] = useState("");
-  const [filteredDta, setfilteresData] = useState(candidatesData);
+  const [selectedRows, setselectedRows] = useState([]);
+  const [filteredDta, setfilteresData] = useState(apiData);
   const [detailed, setdetailed] = useState(false);
 
   useEffect(() => {
-    const result = candidatesData.filter((itr) => {
+    const result = apiData && apiData.filter((itr) => {
       return itr.name.toLowerCase().match(search.toLowerCase());
     });
     setfilteresData(result);
 
     if (search.length === 0) {
-      setfilteresData(candidatesData);
+      setfilteresData(apiData && apiData);
     }
-  }, [search, filteredDta]);
+  }, [search, filteredDta,isPending]);
+
+  const handleChange = ({ selectedRows }) => {
+    // You can set state or dispatch with something like Redux so we can use the retrieved data
+    setselectedRows(selectedRows);
+  };
+
+  const getMyResult = async () => {
+    try {
+      const res = await axios.get("/profile/");
+      console.log(res.data);
+      setapiData(res.data);
+      setisPending(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getMyResult();
+    setisPending(true);
+  },[]);
 
   return (
-    <div >
-      <div className='text-3xl px-6 pt-3 text-gray-700 font-semibold tracking-widest'>
-        {candidatesData.length} Candidates
+    <div>
+      <div className="flex justify-between place-items-center px-6 pt-3">
+        <div className="text-3xl  text-gray-700 font-semibold tracking-widest">
+          {apiData && apiData.length} Candidates
+        </div>
+        <div className="px-2 grid place-items-center">
+          <button onClick={()=>{navigate("/candidates/group-email",{state:{array:selectedRows}})}} className="px-6 py-2 font-bold text-sm rounded-md text-white bg-green-800">
+            Send Group Email
+          </button>
+        </div>
       </div>
-      <DataTable
-          className="overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700]  scrollbar-track-white"
-          columns={columns}
-          data={filteredDta}
-          fixedHeader
-          fixedHeaderScrollHeight="450px"
-          pagination
-          highlightOnHover
-          customStyles={customStyles}
-          subHeader
-          subHeaderComponent={
-            <Search change={(e) => setsearch(e.target.value)} value={search} />
-          }
-        />
-        
-        <CandidateDetailed func={setdetailed} id={id} detailed={detailed}/>
-      
+      {!isPending ? <DataTable
+        className="overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700]  scrollbar-track-white"
+        columns={columns}
+        data={filteredDta}
+        fixedHeader
+        fixedHeaderScrollHeight="450px"
+        pagination
+        highlightOnHover
+        selectableRows
+        selectableRowsHighlight
+        onSelectedRowsChange={handleChange}
+        customStyles={customStyles}
+        subHeader
+        subHeaderComponent={
+          <Search change={(e) => setsearch(e.target.value)} value={search} />
+        }
+      />:<div className="grid place-items-center h-96 bg-white">
+      <div><RotateLoader color="#FFD700" /></div>
     </div>
-  )
-}
+    }
 
-export default Candidates
+      <CandidateDetailed func={setdetailed} id={id} detailed={detailed} />
+    </div>
+  );
+};
+
+export default Candidates;

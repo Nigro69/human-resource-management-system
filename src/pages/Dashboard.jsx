@@ -2,10 +2,12 @@ import React, { useState } from "react";
 import Dropdown from "../components/Dropdown";
 import { hiringPipelineData, jobsData, tasksData } from "../data/dummy";
 import { Chart } from "react-google-charts";
+import { useStateContext } from "../context/ContextProvider";
 
 function Dashboard() {
   const [department, setdepartment] = useState(0);
-  console.log(department);
+  const { userData} = useStateContext();
+  console.log(userData);
 
   return (
     <div className="bg-gray-200 px-6 py-2 w-full h-full min-h-[600px]">

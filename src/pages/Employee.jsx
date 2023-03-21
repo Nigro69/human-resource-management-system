@@ -3,10 +3,19 @@ import DataTable from "react-data-table-component";
 import { BsThreeDots, BsThreeDotsVertical } from "react-icons/bs";
 import { BiFilterAlt } from "react-icons/bi";
 import Search from "../components/Search";
-import { employeeData } from "../data/dummy";
+import axios from "../axios";
 import EmployeeDetailed from "../components/EmployeeDetailed";
+import { useNavigate } from "react-router-dom";
+import {RotateLoader} from "react-spinners"
 
 const Employee = () => {
+  const navigate=useNavigate();
+
+  const [apiData, setapiData] = useState([]);
+  const [isPending, setisPending] = useState(false);
+
+  
+
   const [id, setid] = useState(0);
   const clicked = (id) => {
     setdetailed(true);
@@ -20,7 +29,7 @@ const Employee = () => {
         <div>
           <img
             className="h-8 w-8 rounded-full object-cover"
-            src={row.imgUrl}
+            src={row.image}
             alt=""
           />
         </div>
@@ -56,7 +65,7 @@ const Employee = () => {
     },
     {
       name: "Hired Date",
-      selector: (row) => row.hiredDate,
+      selector: (row) => row.hired_date,
       sortable: true,
       style: {
         fontWeight: "bold",
@@ -129,7 +138,7 @@ const Employee = () => {
   };
 
   const [search, setsearch] = useState("");
-  const [filteredDta, setfilteresData] = useState(employeeData);
+  const [filteredDta, setfilteresData] = useState(apiData);
   const [detailed, setdetailed] = useState(false);
   const [selectedRows, setselectedRows] = useState([]);
   const [seletOptions, setseletOptions] = useState(false);
@@ -140,7 +149,7 @@ const Employee = () => {
     switch (status) {
       case 1:
         {
-          let cpyArray = employeeData.filter(
+          let cpyArray = apiData && apiData.filter(
             (job) => job.status === "Active"
           );
           setfilteresData([...cpyArray]);
@@ -148,7 +157,7 @@ const Employee = () => {
         break;
       case 2:
         {
-          let cpyArray = employeeData.filter(
+          let cpyArray = apiData && apiData.filter(
             (job) => job.status === "Inactive"
           );
           setfilteresData([...cpyArray]);
@@ -156,14 +165,14 @@ const Employee = () => {
         break;
       case 3:
         {
-          let cpyArray = employeeData.filter(
+          let cpyArray = apiData && apiData.filter(
             (job) => job.status === "Unverified"
           );
           setfilteresData([...cpyArray]);
         }
         break;
       case 4:
-        setfilteresData(employeeData);
+        setfilteresData(apiData && apiData);
         break;
 
       default:
@@ -176,25 +185,42 @@ const Employee = () => {
   const handleChange = ({ selectedRows }) => {
     // You can set state or dispatch with something like Redux so we can use the retrieved data
     setselectedRows(selectedRows);
+    console.log(selectedRows);
   };
 
   useEffect(() => {
-    const result = employeeData.filter((itr) => {
+    const result = apiData && apiData.filter((itr) => {
       return itr.name.toLowerCase().match(search.toLowerCase());
     });
     setfilteresData(result);
 
     if (search.length === 0 && !seletOptions) {
-      setfilteresData(employeeData);
+      setfilteresData(apiData && apiData);
     }
-  }, [search]);
+  }, [search,isPending]);
+
+  const getMyResult = async () => {
+    try {
+      const res = await axios.get("/employees/");
+      console.log(res.data);
+      setapiData(res.data);
+      setisPending(false);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getMyResult();
+    setisPending(true);
+  },[]);
 
   return (
     <div className="bg-gray-200">
       <div className="flex justify-between px-6 py-1 place-items-center z-10">
         <div className="flex gap-10">
           <div className="text-3xl  text-gray-700 font-semibold tracking-widest">
-            {employeeData.length} Employees
+            {apiData && apiData.length} Employees
           </div>
           <div className="relative grid place-items-center">
             <div className="grid place-items-center">
@@ -234,7 +260,7 @@ const Employee = () => {
           </div>
           {seletOptions && (
             <div className="absolute z-20 right-20 top-[98px] bg-white rounded-md shadow-xl grid grid-cols-1 divide-y">
-              <div className="font-semibold cursor-pointer text-sm p-2">
+              <div onClick={()=>{navigate("/employee/group-email",{state:{array:selectedRows}}); setseletOptions(false);}} className="font-semibold cursor-pointer text-sm p-2">
                 Send Email
               </div>
               <div
@@ -247,7 +273,7 @@ const Employee = () => {
           )}
         </div>
       </div>
-      <DataTable
+      {!isPending ? <DataTable
         className="overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700]  scrollbar-track-white"
         columns={columns}
         data={filteredDta}
@@ -263,7 +289,11 @@ const Employee = () => {
         subHeaderComponent={
           <Search change={(e) => setsearch(e.target.value)} value={search} />
         }
-      />
+      />:
+      <div className="grid place-items-center h-96 bg-white">
+        <div><RotateLoader color="#FFD700" /></div>
+      </div>
+      }
 
       <EmployeeDetailed func={setdetailed} id={id} detailed={detailed} />
     </div>

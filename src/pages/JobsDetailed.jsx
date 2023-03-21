@@ -14,10 +14,14 @@ import Myfb from "../components/formbuilder/Myfb";
 import { MdDelete } from "react-icons/md";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en";
+import axios from "../axios";
+import {ClockLoader} from "react-spinners"
+import { auth } from "../firebase/config";
 
 const JobsDetailed = () => {
   const location = useLocation();
   const navigate = useNavigate();
+
 
   const onChange = (e) => {
     const files = e.target.files;
@@ -28,6 +32,7 @@ const JobsDetailed = () => {
   const timeAgo = new TimeAgo("en-US");
 
   const [dropone, setdropone] = useState(0);
+  const [isPending, setisPending] = useState(true);
   const [INTELLECTUAL, setINTELLECTUAL] = useState(0);
   const [PERSONAL, setPERSONAL] = useState(0);
   const [INTERPERSONAL, setINTERPERSONAL] = useState(0);
@@ -37,7 +42,7 @@ const JobsDetailed = () => {
   const [cardCategory, setcardCategory] = useState("");
   const [dropCategory, setdropCategory] = useState(false);
   const [newPipeline, setnewPipeline] = useState("");
-  const [pipeline, setpipeline] = useState([]);
+  const [pipeline, setpipeline] = useState(null);
   const [title, settitle] = useState("");
 
   const [tabs, settabs] = useState(1);
@@ -45,25 +50,44 @@ const JobsDetailed = () => {
   const [content, setcontent] = useState(
     "<div>We are looking for a UI/UX designer with a special place in his heart for designing and the ability to work in a fast-paced entrepreneurial environment. It would help if you got excited about creating beautiful-looking consumer products (Apps/ Websites/Graphics) that are simple, intuitive, and responsive.</div><div><br></div><div><b>Responsibilities</b></div><div><br></div><div>Execute all visual design stages from concept to final handover to the technology team • Collaborate with product managers and tech team throughout the design life-cycle such as product wireframes, user</div><div>flows, information architecture, mockups, and visual design,.. o Design new products, user interfaces, and user experiences from scratch across multiple platforms-mobile, desktop, and applications Simplify complex user flows and interactions which are scalable as the products evolve</div><div><br></div><div>Should be good at Iconography, creating Product Assets, and Graphics Ability to execute Social Media Creatives Notifications, Emailers, etc.</div><div>Create a design theme that promotes a strong brand affiliation and brand recall within the target group Hands-on experience with creating short videos and editing.</div><div><br></div><div><b>Requirements</b></div><div><br></div><div>3-years of experience in Graphics, frustration &amp; UI/UX design Formal education in UX/UI Design, Interaction Design Motion, Graphic Design, or a related field of study is a plus</div><div><br></div><div>Good aesthetic sense especially in the domains of typography and color theory</div><div><br></div><div>Strong online portfolio showcasing your best work. You must have proven Adobe Suite Photoshop illustrator, Aherficts, XD Sketch Avalon, Marvel, Jr, Expense creatively saving hand problems shipping innovative Self-motivated without lovers of people in between Excellent communica be conformations aesenting work product managers products within deadlines</div><div>stakeholders.<br></div>"
   );
-  console.log(tabs);
-
-  const deletePipeline = (id) => {
-    let accCopy = pipeline.filter((acc) => acc.id != id);
-    setpipeline([...accCopy]);
-  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    let element = {
-      id: Math.floor(Math.random() * 100 + 1),
-      title: title,
-      time: Date.now(),
-      body: newPipeline,
-    };
-
-    setpipeline([...pipeline, element]);
+    setisPending(true);
+    addNote();
     setnewPipeline("");
     settitle("");
+  };
+
+  const deletePipeline = async (id) => {
+    setisPending(true);
+    try {
+      const res = await axios.delete(`/note/${id}`
+      );
+      console.log(res.data);
+      getMyResult();
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+console.log(location.state.job.id)
+  const addNote = async () => {
+    try {
+      const res = await axios.post("/notes/",
+        {
+          "title": title,
+          "text": newPipeline,
+          "job": location.state.job.id,
+          "profile_id": `${auth.currentUser.uid}`,
+          "time_stamp":Date.now(),
+          "user":1
+      }
+      );
+      console.log(res.data);
+      getMyResult();
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
   const columns = [
@@ -171,7 +195,24 @@ const JobsDetailed = () => {
     if (search.length === 0) {
       setfilteresData(candidatesData);
     }
-  }, [search, filteredDta]);
+  }, [search, filteredDta,isPending,pipeline]);
+
+  const getMyResult = async () => {
+    try {
+      const res = await axios.get("/notes/");
+      setpipeline(res.data);
+      console.log(res.data)
+      setisPending(false);
+      console.log(!isPending && pipeline);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getMyResult();
+    setisPending(true);
+  },[]);
 
   return (
     <div className="bg-gray-200 py-4 px-6 ">
@@ -368,8 +409,8 @@ const JobsDetailed = () => {
         <div className="w-2/4 bg-white rounded-md p-4 h-screen overflow-auto">
           <div className="font-bold text-lg tracking-wide">Notes</div>
           <hr className="h-px my-2 bg-gray-200 border-0 "></hr>
-          <div className="px-4 py-2 full space-y-2">
-            {pipeline.map((item) => (
+          {!isPending ? <div className="px-4 py-2 full space-y-2">
+            {pipeline && pipeline.map((item) => (
               <div
                 key={item.id}
                 className={`py-4 px-10 flex justify-between place-items-center w-full border rounded-md border-t-4 ${
@@ -388,13 +429,14 @@ const JobsDetailed = () => {
                     <div className="font-bold">{item.title}</div>
                     <div className="flex gap-4">
                       <div className="font-bold text-gray-500 text-sm">
-                        {timeAgo.format(item.time)}
+                        {timeAgo.format(item.time_stamp)}
+                        {/* {item.time_stamp} */}
                       </div>{" "}
                       <div className="font-bold text-gray-500 text-sm">
                         Yash Barman
                       </div>
                     </div>
-                    <div className="">{item.body}</div>
+                    <div className="">{item.text}</div>
                   </div>
                 </div>
                 <div>
@@ -405,7 +447,11 @@ const JobsDetailed = () => {
                 </div>
               </div>
             ))}
-          </div>
+          </div>:
+          <div className="grid place-items-center h-96 bg-white">
+          <div><ClockLoader color="#FFD700" /></div>
+        </div>
+          }
           <form
             onSubmit={handleSubmit}
             className="p-4 space-y-2 border-2 rounded-md border-gray-500"
