@@ -8,10 +8,11 @@ export const ContextProvider = ({ children }) => {
   const [activeMenu, setActiveMenu] = useState(true);
   const [authToken, setauthToken] = useState(null);
   const [userData, setuserData] = useState(null);
+  const [email, setEmail] = useState(null);
 
   return (
     // eslint-disable-next-line react/jsx-no-constructed-context-values
-    <StateContext.Provider value={{setuserData,userData, authToken, setauthToken, currentColor, activeMenu, screenSize, setScreenSize, setActiveMenu, setCurrentColor }}>
+    <StateContext.Provider value={{setuserData,userData, authToken, setauthToken, currentColor, activeMenu, screenSize, setScreenSize, setActiveMenu, setCurrentColor,email, setEmail }}>
       {children}
     </StateContext.Provider>
   );

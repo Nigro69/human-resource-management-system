@@ -21,6 +21,9 @@ import GroupEmail from "./pages/GroupEmail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { useStateContext } from "./context/ContextProvider";
+import ApplicantVal from "./pages/ApplicantVal";
+import Applicant from "./pages/Applicant";
+import ApplicantPdfInvoice from "./pages/ApplicantPdfInvoice";
 
 function App() {
   const { authToken } = useStateContext();
@@ -68,6 +71,18 @@ function App() {
                   <Route
                     path="/candidates"
                     element={!authToken ? <Login /> : <Candidates />}
+                  />
+                  <Route
+                    path="/applicantval"
+                    element={<ApplicantVal/>}
+                  />
+                  <Route
+                    path="/applicant/:id"
+                    element={<Applicant/>}
+                  />
+                  <Route
+                    path="/applicant/pdf/:id"
+                    element={<ApplicantPdfInvoice/>}
                   />
                   <Route
                     path="/referrals"

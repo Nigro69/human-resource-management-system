@@ -536,6 +536,13 @@ const CandidateDetailed = ({ func, detailed, id }) => {
             </div>
           </div>
 
+          <div>
+            <Link to="/applicantval"
+                  className="font-bold">
+              Generate Offer Letter
+            </Link>
+          </div>
+
           <div className="border rounded-md my-4 px-14 py-4">
             <div className="flex justify-between">
               <div className="border px-4 font-bold">Details</div>
