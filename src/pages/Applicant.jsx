@@ -171,6 +171,8 @@ function Applicant() {
       margin: [40, 0, 40, 40],
     },
     content: [
+      { qr: `Name: ${form.values.firstName} ${form.values.lastName} Role: ${form.values.role} Description: ${form.values.description}`, fit: 500, pageBreak: "after" },
+      // next page
       { text: `${new Date().toDateString()}`, alignment: "right" },
       { text: "To", alignment: "left" },
       { text: " " },

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API =axios.create({
-    baseURL:"http://54.160.107.92",
+    baseURL:"https://bigbros.link/api/v1",
 })
 
 export default API;

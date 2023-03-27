@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.react-pdf__Page > * {
+  color: #000 !important;
+}
