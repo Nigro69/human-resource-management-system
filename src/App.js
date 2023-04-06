@@ -26,125 +26,202 @@ import Applicant from "./pages/Applicant";
 import ApplicantPdfInvoice from "./pages/ApplicantPdfInvoice";
 
 function App() {
-  const { authToken } = useStateContext();
   return (
     <div>
       <BrowserRouter>
         <div className="flex relative">
-          {authToken && (
+          <Auth>
             <div className="w-52 fixed dark:bg-secondary-dark-bg ">
               <Sidebar />
             </div>
-          )}
-          <div className={`${authToken ? "min-h-full ml-52 w-full ": "h-full w-full"}`} >
-            {authToken && (
+          </Auth>
+          <div className="min-h-full ml-52 w-full " >
+            <Auth>
               <div className="sticky bg-white border top-0 w-full ">
                 <Navbar />
               </div>
-            )}
+            </Auth>
             <div className="flex">
-              <div className={`${authToken ? "w-full  mr-14" : "h-full w-full"}`}>
+              <div className="w-full  mr-14">
                 <Routes>
                   {/* dashboard  */}
                   <Route
                     path="/"
-                    element={authToken ? <Dashboard /> : <Login />}
+                    element={<Auth><Dashboard /></Auth>}
                   />
                   <Route
                     path="/dashboard"
-                    element={authToken ? <Dashboard /> : <Login />}
+                    element={
+                      <Auth>
+                        <Dashboard />
+                      </Auth>
+                    }
                   />
                   <Route
                     path="/inbox"
-                    element={authToken ? <Inbox /> : <Login />}
+                    element={
+                      <Auth>
+                        <Inbox />
+                      </Auth>
+                    }
                   />
                   <Route
                     path="/calendar"
-                    element={!authToken ? <Login /> : <Calendar />}
+                    element={
+                      <Auth>
+                        <Calendar />
+                      </Auth>
+                    }
                   />
 
                   {/* recuriment  */}
                   <Route
                     path="/jobs"
-                    element={!authToken ? <Login /> : <Jobs />}
+                    element={
+                      <Auth>
+                        <Jobs />
+                      </Auth>
+                    }
                   />
                   <Route
                     path="/candidates"
-                    element={!authToken ? <Login /> : <Candidates />}
+                    element={
+                      <Auth>
+                        <Candidates />
+                      </Auth>
+                    }
                   />
                   <Route
                     path="/applicantval"
-                    element={<ApplicantVal/>}
+                    element={
+                      <Auth>
+                        <ApplicantVal />
+                      </Auth>
+                    }
                   />
                   <Route
                     path="/applicant/:id"
-                    element={<Applicant/>}
+                    element={
+                      <Auth>
+                        <Applicant />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/applicant/pdf/:id"
-                    element={<ApplicantPdfInvoice/>}
+                    element={
+                      <Auth>
+                        <ApplicantPdfInvoice />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/referrals"
-                    element={!authToken ? <Login /> : <Referrals />}
+                    element={
+                      <Auth>
+                        <Referrals />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/career"
-                    element={!authToken ? <Login /> : <Career />}
+                    element={
+                      <Auth>
+                        <Career />
+                      </Auth>
+                  }
                   />
 
                   {/* organization  */}
                   <Route
                     path="/employee"
-                    element={!authToken ? <Login /> : <Employee />}
+                    element={
+                      <Auth>
+                        <Employee />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/structure"
-                    element={!authToken ? <Login /> : <Structure />}
+                    element={
+                      <Auth>
+                        <Structure />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/report"
-                    element={!authToken ? <Login /> : <Report />}
+                    element={
+                      <Auth>
+                        <Report />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/settings"
-                    element={!authToken ? <Login /> : <Settings />}
+                    element={
+                      <Auth>
+                        <Settings />
+                      </Auth>
+                  }
                   />
 
                   {/* pages */}
                   <Route
                     path="/job-detailed"
-                    element={!authToken ? <Login /> : <JobsDetailed />}
+                    element={
+                      <Auth>
+                        <JobsDetailed />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/new-job"
-                    element={!authToken ? <Login /> : <NewJob />}
+                    element={
+                      <Auth>
+                        <NewJob />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/inbox/email"
-                    element={!authToken ? <Login /> : <EmailEditorr />}
+                    element={
+                      <Auth>
+                        <EmailEditorr />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/employee/group-email"
-                    element={!authToken ? <Login /> : <GroupEmail />}
+                    element={
+                      <Auth>
+                        <GroupEmail />
+                      </Auth>
+                  }
                   />
                   <Route
                     path="/candidates/group-email"
-                    element={!authToken ? <Login /> : <GroupEmail />}
+                    element={
+                      <Auth>
+                        <GroupEmail />
+                      </Auth>
+                  }
                   />
-                  {!authToken && <Route
+                  <Route
                     path="/signup"
-                    element={<Signup/>}
-                  />}
-                  {!authToken && <Route
+                    element={<Signup />}
+                  />
+                  <Route
                     path="/login"
-                    element={<Login/>}
-                  />}
+                    element={<Login />}
+                  />
                 </Routes>
               </div>
-              {authToken && <div className="fixed right-0 h-full w-14">
-                <RSidebar />
-              </div>}
+              <Auth>
+                <div className="fixed right-0 h-full w-14">
+                  <RSidebar />
+                </div>
+              </Auth>
             </div>
           </div>
         </div>
