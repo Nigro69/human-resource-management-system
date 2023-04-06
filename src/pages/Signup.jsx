@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { auth } from "../firebase/config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useStateContext } from "../context/ContextProvider";
 import { getToken, storeToken } from "../LocalStorage";
 import { PropagateLoader } from "react-spinners";
-import axios from "../axios";
+import axios from "axios";
+import { MdDelete } from "react-icons/md";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -19,11 +20,22 @@ const Signup = () => {
   const [success, setsuccess] = useState(false);
   const [file, setfile] = useState(null);
   const [name, setname] = useState("");
+  const [paramToken, setparamToken] = useState("");
+
+  const [queryParameters] = useSearchParams();
+
+  // useEffect(() => {
+  //   const getToken = queryParameters.get("token");
+  //   setparamToken(getToken);
+  // }, [paramToken])
+  
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setisPending(true);
-    signUp(email, password);
+    // signUp(email, password);
+    getMyResult(queryParameters.get("token"));
     setemail("");
     setpassword("");
   };
@@ -39,7 +51,7 @@ const Signup = () => {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       console.log(res.user);
       setsuccess(true);
-      getMyResult(res.user.uid);
+      // getMyResult(res.user.uid);
       storeToken(res.user.accessToken);
       seterroeMessage(false);
       setTimeout(signupHogaya, 3000);
@@ -53,14 +65,15 @@ const Signup = () => {
     }
   };
 
-  const getMyResult = async (id) => {
+  const getMyResult = async (accToken) => {
     try {
-      const res = await axios.post("/userss/", {
-        "user_id": id,
-        "profile_pic": `${file}`,
-        "name": name,
-        "email": email,
-      });
+      const res = await axios.post(`http://44.204.133.124/api/v1/team/createhrmuser?token=${accToken}`, {
+        email,
+        role:"hr",
+        name,
+        password,
+        display_picture: file
+    });
       console.log(res.data);
     } catch (error) {
       console.log(error.message);
@@ -123,18 +136,29 @@ const Signup = () => {
                 />
               </div>
               <div>
-              <label className="">
+              {!file && <label className="">
                   <div className="text-white">Choose Profile Picture</div>
                   <input
                     type="file"
                     onChange={(e) => {
-                      setfile(e.target.files[0]);
+                      setfile(URL.createObjectURL(e.target.files[0]));
                     }}
                     name="file_upload"
                     className="hidden"
                     alt="cover"
                   />
-                </label>
+                </label>}
+                {file && (
+              <div className="flex gap-4 place-items-center p-2">
+                <img className="h-28 w-28 object-cover" src={file} alt="" />
+                <button
+                  className="px-2 py-2 rounded-full bg-[#BC312E] "
+                  onClick={() => setfile()}
+                >
+                  <MdDelete />
+                </button>
+              </div>
+            )}
               </div>
               <div>
                 {!isPending && (
