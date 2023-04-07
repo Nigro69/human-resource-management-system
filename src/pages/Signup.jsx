@@ -35,6 +35,7 @@ const Signup = () => {
     e.preventDefault();
     setisPending(true);
     // signUp(email, password);
+    console.log(queryParameters.get("token"), queryParameters);
     getMyResult(queryParameters.get("token"));
     setemail("");
     setpassword("");
@@ -75,6 +76,9 @@ const Signup = () => {
         display_picture: file
     });
       console.log(res.data);
+      localStorage.setItem("access_token", res.data.data.access_token);
+      localStorage.setItem("refresh_token", res.data.data.refresh_token);
+      navigate("/");
     } catch (error) {
       console.log(error.message);
     }
