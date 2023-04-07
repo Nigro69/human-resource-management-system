@@ -24,207 +24,230 @@ import { useStateContext } from "./context/ContextProvider";
 import ApplicantVal from "./pages/ApplicantVal";
 import Applicant from "./pages/Applicant";
 import ApplicantPdfInvoice from "./pages/ApplicantPdfInvoice";
+import Auth from "./components/Auth"
+import Layout from "./components/Layout";
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-        <div className="flex relative">
-          <Auth>
-            <div className="w-52 fixed dark:bg-secondary-dark-bg ">
-              <Sidebar />
-            </div>
-          </Auth>
-          <div className="min-h-full ml-52 w-full " >
-            <Auth>
-              <div className="sticky bg-white border top-0 w-full ">
-                <Navbar />
-              </div>
-            </Auth>
-            <div className="flex">
-              <div className="w-full  mr-14">
-                <Routes>
-                  {/* dashboard  */}
-                  <Route
-                    path="/"
-                    element={<Auth><Dashboard /></Auth>}
-                  />
-                  <Route
-                    path="/dashboard"
-                    element={
-                      <Auth>
-                        <Dashboard />
-                      </Auth>
-                    }
-                  />
-                  <Route
-                    path="/inbox"
-                    element={
-                      <Auth>
-                        <Inbox />
-                      </Auth>
-                    }
-                  />
-                  <Route
-                    path="/calendar"
-                    element={
-                      <Auth>
-                        <Calendar />
-                      </Auth>
-                    }
-                  />
-
-                  {/* recuriment  */}
-                  <Route
-                    path="/jobs"
-                    element={
-                      <Auth>
-                        <Jobs />
-                      </Auth>
-                    }
-                  />
-                  <Route
-                    path="/candidates"
-                    element={
-                      <Auth>
-                        <Candidates />
-                      </Auth>
-                    }
-                  />
-                  <Route
-                    path="/applicantval"
-                    element={
-                      <Auth>
-                        <ApplicantVal />
-                      </Auth>
-                    }
-                  />
-                  <Route
-                    path="/applicant/:id"
-                    element={
-                      <Auth>
-                        <Applicant />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/applicant/pdf/:id"
-                    element={
-                      <Auth>
-                        <ApplicantPdfInvoice />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/referrals"
-                    element={
-                      <Auth>
-                        <Referrals />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/career"
-                    element={
-                      <Auth>
-                        <Career />
-                      </Auth>
-                  }
-                  />
-
-                  {/* organization  */}
-                  <Route
-                    path="/employee"
-                    element={
-                      <Auth>
-                        <Employee />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/structure"
-                    element={
-                      <Auth>
-                        <Structure />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/report"
-                    element={
-                      <Auth>
-                        <Report />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/settings"
-                    element={
-                      <Auth>
-                        <Settings />
-                      </Auth>
-                  }
-                  />
-
-                  {/* pages */}
-                  <Route
-                    path="/job-detailed"
-                    element={
-                      <Auth>
-                        <JobsDetailed />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/new-job"
-                    element={
-                      <Auth>
-                        <NewJob />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/inbox/email"
-                    element={
-                      <Auth>
-                        <EmailEditorr />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/employee/group-email"
-                    element={
-                      <Auth>
-                        <GroupEmail />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/candidates/group-email"
-                    element={
-                      <Auth>
-                        <GroupEmail />
-                      </Auth>
-                  }
-                  />
-                  <Route
-                    path="/signup"
-                    element={<Signup />}
-                  />
-                  <Route
-                    path="/login"
-                    element={<Login />}
-                  />
-                </Routes>
-              </div>
+        <Routes>
+          {/* dashboard  */}
+          <Route
+            path="/"
+            element={
               <Auth>
-                <div className="fixed right-0 h-full w-14">
-                  <RSidebar />
-                </div>
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </Auth>
-            </div>
-          </div>
-        </div>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <Auth>
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/inbox"
+            element={
+              <Auth>
+                <Layout>
+                  <Inbox />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/calendar"
+            element={
+              <Auth>
+                <Layout>
+                  <Calendar />
+                </Layout>
+              </Auth>
+            }
+          />
+
+          {/* recuriment  */}
+          <Route
+            path="/jobs"
+            element={
+              <Auth>
+                <Layout>
+                  <Jobs />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/candidates"
+            element={
+              <Auth>
+                <Layout>
+                  <Candidates />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/applicantval"
+            element={
+              <Auth>
+                <Layout>
+                  <ApplicantVal />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/applicant/:id"
+            element={
+              <Auth>
+                <Layout>
+                  <Applicant />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/applicant/pdf/:id"
+            element={
+              <Auth>
+                <Layout>
+                  <ApplicantPdfInvoice />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/referrals"
+            element={
+              <Auth>
+                <Layout>
+                  <Referrals />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/career"
+            element={
+              <Auth>
+                <Layout>
+                  <Career />
+                </Layout>
+              </Auth>
+            }
+          />
+
+          {/* organization  */}
+          <Route
+            path="/employee"
+            element={
+              <Auth>
+                <Layout>
+                  <Employee />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/structure"
+            element={
+              <Auth>
+                <Layout>
+                  <Structure />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/report"
+            element={
+              <Auth>
+                <Layout>
+                  <Report />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <Auth>
+                <Layout>
+                  <Settings />
+                </Layout>
+              </Auth>
+            }
+          />
+
+          {/* pages */}
+          <Route
+            path="/job-detailed"
+            element={
+              <Auth>
+                <Layout>
+                  <JobsDetailed />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/new-job"
+            element={
+              <Auth>
+                <Layout>
+                  <NewJob />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/inbox/email"
+            element={
+              <Auth>
+                <Layout>
+                  <EmailEditorr />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/employee/group-email"
+            element={
+              <Auth>
+                <Layout>
+                  <GroupEmail />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/candidates/group-email"
+            element={
+              <Auth>
+                <Layout>
+                  <GroupEmail />
+                </Layout>
+              </Auth>
+            }
+          />
+          <Route
+            path="/signup"
+            element={<Signup />}
+          />
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+        </Routes>
       </BrowserRouter>
     </div>
   );

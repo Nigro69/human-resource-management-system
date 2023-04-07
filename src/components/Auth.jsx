@@ -9,6 +9,8 @@ export default function Auth({ children }) {
   useEffect(() => {
     const access_token = localStorage.getItem('access_token')
     const refresh_token = localStorage.getItem('refresh_token')
+
+    console.log(access_token, refresh_token)
     
     const localAccess =
       access_token !== null &&
@@ -44,7 +46,7 @@ export default function Auth({ children }) {
         });
 
       }else{
-        naviagate("/")
+        navigate("/login")
       }
     }else{
       setAccess(true);
