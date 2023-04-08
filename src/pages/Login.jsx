@@ -26,19 +26,33 @@ const Login = () => {
     };
 
     const logIn = async (email, password) => {
+        // try {
+        //   const res = await signInWithEmailAndPassword(auth, email, password);
+        //   storeToken(res.user.accessToken);
+        //   seterroeMessage(false);
+        //   const yash = getToken();
+        //   setauthToken(yash);
+        //   navigate("/dashboard");
+        //   setisPending(false);
+        // } catch (error) {
+        //   console.log(error);
+        //   navigate("/login");
+        //   seterroeMessage(true);
+        //   setisPending(false);
+        // }
+
         try {
-          const res = await signInWithEmailAndPassword(auth, email, password);
-          storeToken(res.user.accessToken);
-          seterroeMessage(false);
-          const yash = getToken();
-          setauthToken(yash);
-          navigate("/dashboard");
-          setisPending(false);
+          const res = await axios.post(`http://44.204.133.124/api/v1/team/login`, {
+            email,
+            role:"hr",
+            password,
+        });
+          console.log(res.data);
+          localStorage.setItem("access_token", res.data.data.access_token);
+          localStorage.setItem("refresh_token", res.data.data.refresh_token);
+          navigate("/");
         } catch (error) {
-          console.log(error);
-          navigate("/login");
-          seterroeMessage(true);
-          setisPending(false);
+          console.log(error.message);
         }
       };
     
