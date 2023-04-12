@@ -68,7 +68,7 @@ const Signup = () => {
 
   const getMyResult = async (accToken) => {
     try {
-      const res = await axios.post(`http://44.204.133.124/api/v1/team/createhrmuser?token=${accToken}`, {
+      const res = await axios.post(`https://bdmhrmnode.bigbros.link/api/v1/team/createhrmuser?token=${accToken}`, {
         email,
         role:"hr",
         name,
