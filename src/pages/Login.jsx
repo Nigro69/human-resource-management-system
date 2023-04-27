@@ -43,7 +43,7 @@ const Login = () => {
         // }
 
         try {
-          const res = await axios.post(`https://bdmhrmnode.bigbros.link/api/v1/team/login`, {
+          const res = await axios.post(`https://bdmhrmnode.bigbros.link/api/v1/team/hrmlogin`, {
             email,
             role:"hr",
             password,
