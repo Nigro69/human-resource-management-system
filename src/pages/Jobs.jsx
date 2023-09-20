@@ -3,37 +3,54 @@ import { useNavigate } from "react-router-dom";
 import Dropdown from "../components/Dropdown";
 import axios from "../axios";
 import { RotateLoader } from "react-spinners";
+import {jobsMainData} from "../data/dummy";
 
 const Jobs = () => {
   const navigate = useNavigate();
 
   const [jobs, setjobs] = useState(0);
-  const [apiData, setapiData] = useState([]);
+  const [apiData, setapiData] = useState(jobsMainData && jobsMainData);
   const [isPending, setisPending] = useState(false);
-  const [josDataArray, setjosDataArray] = useState(apiData);
+  const [josDataArray, setjosDataArray] = useState(jobsMainData && jobsMainData);
   const [sortlist, setsortlist] = useState(0);
   const [status, setstatus] = useState(0);
+
+  // const getMyResult = async () => {
+  //   try {
+  //     const res = await axios.get("/jobs/");
+  //     console.log(res.data);
+  //     setapiData(res.data);
+  //     setisPending(false);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   getMyResult();
+  //   setisPending(true);
+  // }, []);
 
   useEffect(() => {
     switch (sortlist) {
       case 0:
         {
           let cpyArray = [...apiData];
-          cpyArray.sort((a, b) => b.publishedDate - a.publishedDate);
+          cpyArray.sort((a, b) => b.publishData - a.publishData);
           setjosDataArray(cpyArray);
         }
         break;
       case 1:
         {
           let cpyArray = [...apiData];
-          cpyArray.sort((a, b) => a.publishedDate - b.publishedDate);
+          cpyArray.sort((a, b) => a.publishData - b.publishData);
           setjosDataArray(cpyArray);
         }
         break;
       case 2:
         {
           let cpyArray = [...apiData];
-          cpyArray.sort((a, b) => a.publishedDate - b.publishedDate);
+          cpyArray.sort((a, b) => a.publishData - b.publishData);
           setjosDataArray(cpyArray);
         }
         break;
@@ -41,22 +58,6 @@ const Jobs = () => {
         break;
     }
   }, [sortlist]);
-
-  const getMyResult = async () => {
-    try {
-      const res = await axios.get("/jobs/");
-      console.log(res.data);
-      setapiData(res.data);
-      setisPending(false);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  useEffect(() => {
-    getMyResult();
-    setisPending(true);
-  }, []);
 
   useEffect(() => {
     switch (status) {
@@ -157,7 +158,7 @@ const Jobs = () => {
                       total
                     </div>
                     <div className="text-xl font-bold px-2">
-                      {job.candidates}
+                      {job.candidates.total}
                     </div>
                   </div>
                   <div className="border-l-4 border-l-gray-400">
@@ -165,7 +166,7 @@ const Jobs = () => {
                       New
                     </div>
                     <div className="text-xl font-bold px-2">
-                      {job.candidates}
+                      {job.candidates.new}
                     </div>
                   </div>
                 </div>

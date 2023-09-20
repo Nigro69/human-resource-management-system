@@ -226,7 +226,7 @@ export const hiringPipelineData = {
         title: "Senior Product Designer",
         applicants: 126,
       },
-      
+
     ],
     columns: [
       "New Applied",
@@ -267,7 +267,7 @@ export const hiringPipelineData = {
         title: "Senior Product Designer",
         applicants: 126,
       },
-      
+
     ],
     columns: [
       "New Applied",
@@ -308,7 +308,7 @@ export const hiringPipelineData = {
         title: "Senior Product Designer",
         applicants: 126,
       },
-      
+
     ],
     columns: [
       "Applied",
@@ -336,7 +336,7 @@ export const jobsData={
     ["Internal", 2],
     ["Private", 2],
     ["On Hold", 2],
-    ["Closed", 7], 
+    ["Closed", 7],
   ],
   options :{
     legend:{alignment:'center',position:'right'},
@@ -352,31 +352,31 @@ export const tasksData=[
     id:1,
     title:"InterView with the candidates",
     time:"07:00 07:45 Am",
-    
+
   },
   {
     id:2,
     title:"Conduct the test",
     time:"08:00 08:45 Am",
-    
+
   },
   {
     id:3,
     title:"Candidate Screening",
     time:"12:00 10:00 Pm",
-    
+
   },
   {
     id:4,
     title:"Submit finance requritment report",
     time:"02:00 02:15 Pm",
-    
+
   },
   {
     id:5,
     title:"Change the logo aof Career Site",
     time:"04:50 06:45 Pm",
-    
+
   },
 ]
 
@@ -686,13 +686,13 @@ export const chats=[
     messages:[
       {
         id:1,
-        body:"Good Evening, Yash. Jenny  this side.",
+        body:"Good Evening, Yash. Kristin  this side.",
         timeStamp:1676241656830,
         myMsg:false,
       },
       {
         id:2,
-        body:"Hey Jenny ",
+        body:"Hey Kristin ",
         timeStamp:1676241656830,
         myMsg:true,
       },
@@ -718,7 +718,7 @@ export const chats=[
 ]
 
 export const scoreCadData=[
-  
+
 ]
 
 export const scoreCardData={
@@ -813,7 +813,7 @@ export const scoreCardData={
       id:1,
       checked:false,
       title:"Resourcefulness/Initiative",
-      subTitle:"Passionately finds ways over, around, or through barriers to success. Achieves results despite lack of resources. Goes beyond the call of duty. Shows bias for action. A results-oriented", 
+      subTitle:"Passionately finds ways over, around, or through barriers to success. Achieves results despite lack of resources. Goes beyond the call of duty. Shows bias for action. A results-oriented",
       mar:5,
     },
     {

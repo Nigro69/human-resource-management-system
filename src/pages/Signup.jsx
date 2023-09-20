@@ -67,7 +67,7 @@ const Signup = () => {
 
   const getMyResult = async (accToken) => {
     try {
-      const res = await axios.post(`http://44.204.133.124/api/v1/team/createhrmuser?token=${accToken}`, {
+      const res = await axios.post(`http://44.204.133.124/api/v1/team/createhrmuser?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inlhc2hiYXJtYW4zMDEwQGdtYWlsLmNvbSIsInJvbGUiOiJhc3Npc3RhbnQgaHIgbWFuYWdlciIsImlhdCI6MTY4MDc5MTc1NywiZXhwIjoxNjgwNzk1MzU3fQ.If69ha35YHD8zIHst5n2mfwe1-G9z15ZJbHYuYWeDiQ`, {
         email,
         role:"hr",
         name,

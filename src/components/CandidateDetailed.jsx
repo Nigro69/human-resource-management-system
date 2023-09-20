@@ -17,6 +17,7 @@ import { DefaultEditor } from "react-simple-wysiwyg";
 import { ClockLoader, ScaleLoader } from "react-spinners";
 import axios from "../axios";
 import { async } from "@firebase/util";
+import {candidatesData} from "../data/dummy";
 
 const CandidateDetailed = ({ func, detailed, id }) => {
   const [tabs, settabs] = useState(1);
@@ -35,7 +36,7 @@ const CandidateDetailed = ({ func, detailed, id }) => {
   const [tTab, settTab] = useState(1);
   const [isPending, setisPending] = useState(false);
   const [apiData, setapiData] = useState({});
-  const [interviewData, setinterviewData] = useState(null);
+  const [interviewData, setinterviewData] = useState([{id:1,official_name:"Yash Barman",stage:"Interview",date:"2021-09-30T18:30:00.000Z",meeting_link:"https://meet.google.com/"}]);
   const [dropofficial, setdropofficial] = useState(false);
   const [officail, setofficail] = useState("");
   const [stage, setstage] = useState("");
@@ -52,14 +53,24 @@ const CandidateDetailed = ({ func, detailed, id }) => {
   const scheduleInterview = async () => {
     setisIntPending(true);
     try {
-      const res = await axios.post(`/interview/`, {
+      // const res = await axios.post(`/interview/`, {
+      //   official_name: officail,
+      //   meeting_link: meetlink,
+      //   stage: stage,
+      //   date: timeAndDate,
+      //   candidate: id,
+      //   official_image: "image",
+      // });
+      const res = {
+        id:Math.floor(Math.random() * 1000 + 1),
         official_name: officail,
         meeting_link: meetlink,
         stage: stage,
         date: timeAndDate,
         candidate: id,
         official_image: "image",
-      });
+      }
+      setinterviewData([...interviewData, res]);
     } catch (error) {
       console.log(error.message);
     }
@@ -116,7 +127,7 @@ const CandidateDetailed = ({ func, detailed, id }) => {
         },</div><div><br></div><div>Thank you for taking the time to meet with our team about the SDE Intern role at Fawr Bsol. It was a pleasure to learn more about your skills and accomplishments.</div><div>Unfortunately, our team did not select you for further consideration.</div><div>I would like to note that competition for jobs at Fawr Bsol is always strong and that we often have to make difficult choices between many high-caliber candidates. Now that we've had the chance to know more about you, we will be keeping your resume on file for future openings that better fit your profile.</div><div>I am happy to answer your questions if you would like any specific feedback about your application or interviews.</div><div>Thanks again for your interest in Fawr Bsol&nbsp; and best of luck with your job search.</div><div><br></div><div>Visit our <a href="https://www.fawrtech.com/careers">career site</a> for more opportunities.</div><div><br></div><div>Regards,</div><div><br></div><div>HR</div>`,
       },
     ]);
-  }, [id]);
+  }, [id,apiData]);
 
   const sendTemplate = (id) => {
     let msg = {
@@ -143,8 +154,10 @@ const CandidateDetailed = ({ func, detailed, id }) => {
 
   const getMyResult = async () => {
     try {
-      const res = await axios.get(`/profile/${id}`);
-      setapiData(res.data);
+      // const res = await axios.get(`/profile/${id}`);
+      // setapiData(res.data);
+      const res = await candidatesData.find((data) => data.id === id);
+      setapiData(res);
       setisPending(false);
     } catch (error) {
       console.log(error.message);
@@ -152,14 +165,14 @@ const CandidateDetailed = ({ func, detailed, id }) => {
   };
   const interviewResult = async () => {
     try {
-      const res = await axios.get(`/interview/`);
-      let arrCopy = [];
-      res.data.forEach((data) => {
-        if (data.candidate == id) {
-          arrCopy.push(data);
-        }
-      });
-      setinterviewData(arrCopy);
+      // const res = await axios.get(`/interview/`);
+      // let arrCopy = [];
+      // res.data.forEach((data) => {
+      //   if (data.candidate == id) {
+      //     arrCopy.push(data);
+      //   }
+      // });
+      // setinterviewData(arrCopy);
       setisIntPending(false);
     } catch (error) {
       console.log(error.message);
@@ -169,7 +182,9 @@ const CandidateDetailed = ({ func, detailed, id }) => {
   const deleteInterview = async (id) => {
     setisIntPending(true);
     try {
-      const res = await axios.delete(`/interview/${id}`);
+      // const res = await axios.delete(`/interview/${id}`);
+      let array = interviewData.filter((task) => task.id !== id);
+      setinterviewData([...array]);
       interviewResult();
     } catch (error) {
       console.log(error.message);
@@ -180,11 +195,16 @@ const CandidateDetailed = ({ func, detailed, id }) => {
     setupdateBtn(true);
     setintid(id);
     try {
-      const res = await axios.get(`/interview/${id}`);
-      setofficail(res.data.official_name);
-      setstage(res.data.stage);
-      setmeetlink(res.data.meeting_link);
-      settimeAndDate(res.data.date);
+      // const res = await axios.get(`/interview/${id}`);
+      // setofficail(res.data.official_name);
+      // setstage(res.data.stage);
+      // setmeetlink(res.data.meeting_link);
+      // settimeAndDate(res.data.date);
+      const res = await interviewData.find((data) => data.id === id);
+      setofficail(res.official_name);
+      setstage(res.stage);
+      setmeetlink(res.meeting_link);
+      settimeAndDate(res.date);
     } catch (error) {
       console.log(error.message);
     }
@@ -194,14 +214,29 @@ const CandidateDetailed = ({ func, detailed, id }) => {
   const updateCurrInterview = async () => {
     setisIntPending(true);
     try {
-      const res = await axios.put(`/interview/${intid}`, {
-        official_name: officail,
-        meeting_link: meetlink,
-        stage: stage,
-        date: timeAndDate,
-        candidate: id,
-        official_image: "image",
+      // const res = await axios.put(`/interview/${intid}`, {
+      //   official_name: officail,
+      //   meeting_link: meetlink,
+      //   stage: stage,
+      //   date: timeAndDate,
+      //   candidate: id,
+      //   official_image: "image",
+      // });
+      let new_updated_data = interviewData.map((taski) => {
+        if (taski.id === intid) {
+          return {
+            ...taski,
+            official_name: officail,
+            meeting_link: meetlink,
+            stage: stage,
+            date: timeAndDate,
+            candidate: id,
+            official_image: "image",
+          };
+        }
+        return taski;
       });
+      setinterviewData([...new_updated_data]);
     } catch (error) {
       console.log(error.message);
     }
@@ -247,7 +282,7 @@ const CandidateDetailed = ({ func, detailed, id }) => {
               <div>
                 <img
                   className="h-14 w-14 rounded-full object-cover"
-                  src={apiData && apiData.image}
+                  src={apiData && apiData.imgUrl}
                   alt=""
                 />
               </div>
@@ -257,7 +292,8 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   {apiData && apiData.name}
                 </div>
                 <div className="font-bold uppercase text-sm text-gray-500">
-                  {apiData && apiData.job_title} - Fulltime
+                  {/* {apiData && apiData.job_title} */}
+                  Software Engineer - Fulltime
                 </div>
                 <div className="font-bold uppercase text-sm text-gray-500">
                   {apiData && apiData.stage}
@@ -638,7 +674,8 @@ const CandidateDetailed = ({ func, detailed, id }) => {
               <div>
                 <div className="font-bold text-sm text-gray-500">Phone</div>
                 <div className="font-bold">
-                  {apiData && apiData.phonenumber}
+                  {/* {apiData && apiData.phonenumber} */}
+                  4587962149
                 </div>
               </div>
               <div>
@@ -653,12 +690,16 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   to="https://yash-portflio-3010.vercel.app/"
                   className="font-bold"
                 >
-                  {apiData && apiData.website}
+                  {/* {apiData && apiData.website} */}
+                  Website
                 </Link>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Address</div>
-                <div className="font-bold">{apiData && apiData.origin}</div>
+                <div className="font-bold">
+                  {/* {apiData && apiData.origin} */}
+                  Xyx street, abc city, 123456
+                  </div>
               </div>
             </div>
           </div>
@@ -672,14 +713,18 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                 <div className="font-bold text-sm text-gray-500">
                   Current Job Title
                 </div>
-                <div className="font-bold">{apiData && apiData.job_title}</div>
+                <div className="font-bold">
+                  {/* {apiData && apiData.job_title} */}
+                  Software Enginner
+                  </div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
                   Higest Qualification Held
                 </div>
                 <div className="font-bold">
-                  {apiData && apiData.highest_qualification}
+                  {/* {apiData && apiData.highest_qualification} */}
+                  B-tech in Computer Science
                 </div>
               </div>
               <div>
@@ -687,7 +732,8 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   Expected Salary
                 </div>
                 <div className="font-bold">
-                  {apiData && apiData.expected_salary}
+                  {/* {apiData && apiData.expected_salary} */}
+                  10 LPAn
                 </div>
               </div>
               <div>
@@ -695,7 +741,8 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   Current Salary
                 </div>
                 <div className="font-bold">
-                  {apiData && apiData.current_salary}
+                  {/* {apiData && apiData.current_salary} */}
+                  8 LPAn
                 </div>
               </div>
               <div>
@@ -703,7 +750,8 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   Experience in years
                 </div>
                 <div className="font-bold">
-                  {apiData && apiData.experience} years
+                  {/* {apiData && apiData.experience} */}
+                  2 years
                 </div>
               </div>
               <div>
@@ -712,21 +760,23 @@ const CandidateDetailed = ({ func, detailed, id }) => {
                   to="https://in.linkedin.com/in/yash-barman-20185921a?trk=public_profile_browsemap"
                   className="font-bold"
                 >
-                  {apiData && apiData.linkedin}
+                  {/* {apiData && apiData.linkedin} */}
+                  Linkedin
                 </Link>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Skills</div>
                 <div className="flex my-2 gap-2">
-                  {apiData.skills &&
-                    apiData.skills.map((skill) => (
+                  {/* {apiData.skills &&
+                    apiData.skills.map((skill) => ( */}
                       <div
-                        key={skill.id}
+                        // key={skill.id}
                         className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500"
                       >
-                        {skill}
+                        {/* {skill} */}
+                        React
                       </div>
-                    ))}
+                    {/* ))} */}
                 </div>
               </div>
             </div>

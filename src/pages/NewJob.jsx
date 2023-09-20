@@ -35,6 +35,8 @@ const NewJob = () => {
   const [dropCategory, setdropCategory] = useState(false);
   const [title, settitle] = useState("");
   const [experience, setexperience] = useState("");
+  const [postype, setpostype] = useState("");
+  const [droppostype, setdroppostype] = useState(false);
 
   const [taggs, setTags] = useState([]);
   const addTags = (event) => {
@@ -418,9 +420,62 @@ const NewJob = () => {
                       )}
                     </div>
                     <div className="relative">
+                      <div className="font-bold">Job Position Type</div>
+                      <div onClick={() => setdroppostype(!droppostype)}>
+                        {postype === "" ? (
+                          <div className="flex justify-between p-2 place-items-center bg-gray-100 border rounded-md">
+                            <div className="font-bold text-gray-400">
+                              Select Job position
+                            </div>
+                            <div>
+                              <BsChevronDown />
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="bg-gray-100 p-2 border flex justify-between place-items-center rounded-md">
+                            {postype}{" "}
+                            <div>
+                              <BsChevronDown />
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      {droppostype && (
+                        <div className="absolute w-full z-10 border-2 bg-white grid grid-cols-1 divide-y">
+                          <div
+                            onClick={() => {
+                              setpostype("Student");
+                              setdroppostype(false);
+                            }}
+                            className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
+                          >
+                            Student
+                          </div>
+                          <div
+                            onClick={() => {
+                              setpostype("Graduates/Freshers");
+                              setdroppostype(false);
+                            }}
+                            className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
+                          >
+                            Graduate/Freshers
+                          </div>
+                          <div
+                            onClick={() => {
+                              setpostype("Experienced Professionals");
+                              setdroppostype(false);
+                            }}
+                            className="text-sm font-bold bg-white text-center hover:bg-gray-100 p-2"
+                          >
+                            Experienced Professionals
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="relative">
                       <div className="font-bold">Location</div>
                       <div onClick={() => setdroplocation(!droplocation)}>
-                        {location === 0 ? (
+                        {location === null ? (
                           <div className="flex justify-between p-2 place-items-center bg-gray-100 border rounded-md">
                             <div className="font-bold text-gray-400">
                               Select Location
@@ -481,9 +536,17 @@ const NewJob = () => {
                       />
                     </div>
                     <div>
-                      <div className="font-bold">Expected Salary</div>
-                      <div className="flex relative place-items-center">
-                        <div
+                      <div className="font-bold">Recruitment contact (Owner)</div>
+                      <input
+                        className="border w-full bg-gray-100 my-2 p-2 rounded-md"
+                        placeholder="name@exaplle.com"
+                        type="email"
+                      />
+                    </div>
+                    <div>
+                      <div className="font-bold">Salary</div>
+                      <div className="flex gap-3 relative place-items-center">
+                        {/* <div
                           className="w-1/4"
                           onClick={() => setdropcurrency(!dropcurrency)}
                         >
@@ -504,8 +567,8 @@ const NewJob = () => {
                               </div>
                             </div>
                           )}
-                        </div>
-                        {dropcurrency && (
+                        </div> */}
+                        {/* {dropcurrency && (
                           <div className="absolute top-12  w-1/4 z-10 border-2 bg-white grid grid-cols-1 divide-y">
                             <div
                               onClick={() => {
@@ -526,10 +589,15 @@ const NewJob = () => {
                               INR
                             </div>
                           </div>
-                        )}
+                        )} */}
                         <input
-                          className="border w-3/4 bg-gray-100 my-2 p-2 rounded-r-md"
-                          placeholder="Enter expericence"
+                          className="border w-full bg-gray-100 my-2 p-2 rounded-r-md"
+                          placeholder="Enter Minimum Salary"
+                          type="number"
+                        />
+                        <input
+                          className="border w-full bg-gray-100 my-2 p-2 rounded-r-md"
+                          placeholder="Enter Maximum Salary"
                           type="number"
                         />
                       </div>

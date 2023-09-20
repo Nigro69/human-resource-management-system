@@ -7,14 +7,15 @@ import axios from "../axios";
 import EmployeeDetailed from "../components/EmployeeDetailed";
 import { useNavigate } from "react-router-dom";
 import {RotateLoader} from "react-spinners"
+import {employeeData} from "../data/dummy";
 
 const Employee = () => {
   const navigate=useNavigate();
 
-  const [apiData, setapiData] = useState([]);
+  const [apiData, setapiData] = useState(employeeData);
   const [isPending, setisPending] = useState(false);
 
-  
+
 
   const [id, setid] = useState(0);
   const clicked = (id) => {
@@ -29,7 +30,7 @@ const Employee = () => {
         <div>
           <img
             className="h-8 w-8 rounded-full object-cover"
-            src={row.image}
+            src={row.imgUrl}
             alt=""
           />
         </div>
@@ -65,7 +66,7 @@ const Employee = () => {
     },
     {
       name: "Hired Date",
-      selector: (row) => row.hired_date,
+      selector: (row) => row.hiredDate,
       sortable: true,
       style: {
         fontWeight: "bold",
@@ -199,21 +200,21 @@ const Employee = () => {
     }
   }, [search,isPending]);
 
-  const getMyResult = async () => {
-    try {
-      const res = await axios.get("/employees/");
-      console.log(res.data);
-      setapiData(res.data);
-      setisPending(false);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  // const getMyResult = async () => {
+  //   try {
+  //     const res = await axios.get("/employees/");
+  //     console.log(res.data);
+  //     setapiData(res.data);
+  //     setisPending(false);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
 
-  useEffect(() => {
-    getMyResult();
-    setisPending(true);
-  },[]);
+  // useEffect(() => {
+  //   getMyResult();
+  //   setisPending(true);
+  // },[]);
 
   return (
     <div className="bg-gray-200">

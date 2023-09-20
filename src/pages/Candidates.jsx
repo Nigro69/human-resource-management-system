@@ -6,6 +6,7 @@ import CandidateDetailed from "../components/CandidateDetailed";
 import Search from "../components/Search";
 import {RotateLoader} from "react-spinners"
 import axios from "../axios";
+import {candidatesData} from "../data/dummy";
 
 const Candidates = () => {
   const [id, setid] = useState(0);
@@ -26,7 +27,7 @@ const Candidates = () => {
         <div>
           <img
             className="h-8 w-8 rounded-full object-cover"
-            src={row.image}
+            src={row.imgUrl}
             alt=""
           />
         </div>
@@ -62,7 +63,7 @@ const Candidates = () => {
     },
     {
       name: "Applied Date",
-      selector: (row) => row.appled_date,
+      selector: (row) => row.appliedData,
       sortable: true,
       style: {
         fontWeight: "bold",
@@ -127,7 +128,7 @@ const Candidates = () => {
     setfilteresData(result);
 
     if (search.length === 0) {
-      setfilteresData(apiData && apiData);
+      setfilteresData(candidatesData && candidatesData);
     }
   }, [search, filteredDta,isPending]);
 
@@ -136,20 +137,23 @@ const Candidates = () => {
     setselectedRows(selectedRows);
   };
 
-  const getMyResult = async () => {
-    try {
-      const res = await axios.get("/profile/");
-      console.log(res.data);
-      setapiData(res.data);
-      setisPending(false);
-    } catch (error) {
-      console.log(error.message);
-    }
+  const getMyResult = () => {
+    setisPending(true);
+    // try {
+    //   const res = await axios.get("/profile/");
+    //   console.log(res.data);
+    //   setapiData(res.data);
+    //   setisPending(false);
+    // } catch (error) {
+    //   console.log(error.message);
+    // }
+    setapiData(candidatesData);
+    setisPending(false);
   };
 
   useEffect(() => {
     getMyResult();
-    setisPending(true);
+    // setisPending(true);
   },[]);
 
   return (

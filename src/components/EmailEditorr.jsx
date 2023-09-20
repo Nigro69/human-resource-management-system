@@ -29,7 +29,7 @@ const EmailEditorr = () => {
     setbody("");
     setsubject("");
   }
-  
+
   const sendMail = () => {
     emailEditorRef.current.editor.exportHtml((data) => {
       const { design, html } = data;
@@ -51,7 +51,7 @@ const EmailEditorr = () => {
       console.log(error.message);
     }
   };
-  
+
   const onLoad = () => {
     // const templateJson = {};
     // emailEditorRef.current.editor.loadDesign(templateJson);
@@ -63,7 +63,7 @@ const EmailEditorr = () => {
     <div className="bg-gray-200 p-4 h-[600px]">
       <div className="flex gap-5 justify-between">
         <div className="font-bold text-2xl">Sending mail to {location.state.name && location.state.name}</div>
-        {tab===2 && <button className="font-bold text-sm text-white bg-green-800 rounded-md px-6 py-1" onClick={sendMail}>Send Mail</button>}
+        {tab===2 && <button className="font-bold text-sm text-white bg-green-800 rounded-md px-6 py-1" disabled onClick={sendMail}>Send Mail</button>}
       </div>
       <div className="flex gap-3 px-4 pt-3">
         <button onClick={()=>settab(1)} className={`font-bold px-6 py-2 rounded-md ${tab===1 ? "border-b-2 border-b-green-800 bg-green-100 text-green-800":"text-gray-500 bg-gray-200"}`}>Simple Mail</button>
@@ -74,13 +74,13 @@ const EmailEditorr = () => {
         <div ><input value={tempSub} onChange={(e)=>settempSub(e.target.value)} placeholder="Enter your subject here" className="focus:outline-0 font-bold tracking-wider rounded-lg bg-gray-100 p-2 w-3/4 border" type="text" /></div>
       <EmailEditor ref={emailEditorRef} onLoad={onLoad} onReady={onReady} />
       </div>}
-      {tab===1 && 
+      {tab===1 &&
       <div className="m-5 bg-white rounded-lg p-6 space-y-2">
         <div className="font-bold tracking-wider">Subject</div>
         <div ><input value={subject} onChange={(e)=>setsubject(e.target.value)} placeholder="Enter your subject here" className="focus:outline-0 font-bold tracking-wider rounded-lg bg-gray-100 p-2 w-3/4 border" type="text" /></div>
         <div className="font-bold tracking-wider">Body</div>
         <div><textarea value={body} onChange={(e)=>setbody(e.target.value)} placeholder="Compose mail body" className=" tracking-wider focus:outline-0 rounded-lg bg-gray-100 p-2 w-3/4 border"  cols="30" rows="10"></textarea></div>
-        <div className="flex justify-end w-3/4"><button onClick={()=>{sendSimpleMail(); setispending(true);}} className="font-bold text-white bg-green-800 px-6 py-2 rounded-md">Send</button></div>
+        <div className="flex justify-end w-3/4"><button disabled onClick={()=>{sendSimpleMail(); setispending(true);}} className="font-bold text-white bg-green-800 px-6 py-2 rounded-md">Send</button></div>
       </div>
       }
       {ispending && <div className="grid place-items-center z-50 fixed bottom-0 left-0 right-0 top-0 bg-gray-500 bg-opacity-60">

@@ -15,10 +15,11 @@ import { DefaultEditor } from "react-simple-wysiwyg";
 import axios from "../axios";
 import {RotateLoader} from "react-spinners"
 import { auth } from "../firebase/config";
+import {candidatesData} from "../data/dummy";
 
 function Inbox() {
   const [tab, settab] = useState(1);
-  const [apiData, setapiData] = useState([]);
+  const [apiData, setapiData] = useState(candidatesData);
   const [chatsData, setchatsData] = useState([]);
   const [isPending, setisPending] = useState(true);
   const [detailedId, setdetailedId] = useState(1);
@@ -41,16 +42,16 @@ function Inbox() {
 
   useEffect(() => {
     if(file){
-      // let msg = {
-      //   id: Math.floor(Math.random() * 1000 + 1),
-      //   body: `<a href=${file}><div><p>&nbsp; <strong style="font-size: 18px;">Document</strong><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP64kr8u-sTKflOnGE28_tnrE4xHlMHzHHTA&amp;usqp=CAU" alt="" width="49" height="51" style="float: left;"></p></div></a>`,
-      //   timeStamp: Date.now(),
-      //   myMsg: true,
-      // };
-      // setmessages([...messages, msg]);
-      sendFile();
+      let msg = {
+        id: Math.floor(Math.random() * 1000 + 1),
+        body: `<a href=${file}><div><p>&nbsp; <strong style="font-size: 18px;">Document</strong><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTP64kr8u-sTKflOnGE28_tnrE4xHlMHzHHTA&amp;usqp=CAU" alt="" width="49" height="51" style="float: left;"></p></div></a>`,
+        timeStamp: Date.now(),
+        myMsg: true,
+      };
+      setmessages([...messages, msg]);
+      // sendFile();
     }
-    
+
   }, [file]);
 
   const sendFile = async () => {
@@ -70,7 +71,7 @@ function Inbox() {
   };
 
   useEffect(() => {
-    
+
     settempDataArray([{
       id: 1,
       title: `New employee announcement ${apiData[detailedId - 1] && apiData[detailedId - 1].name}`,
@@ -109,28 +110,22 @@ function Inbox() {
     }
   }, [search, filteredDta,isPending]);
 
-  
-  console.log(!chatPending && messages);
-
-  // const handleSubmit = () => {
-  //   let msg = {
-  //     id: Math.floor(Math.random() * 1000 + 1),
-  //     body: inputMsg,
-  //     timeStamp: Date.now(),
-  //     myMsg: true,
-  //   };
-  //   setmessages([...messages, msg]);
-  //   setinputMsg("");
-  // };
 
   const handleSubmit = async () => {
     try {
-      const res = await axios.post("/chats/",{
-        "profile_id": auth.currentUser.uid + detailedId,
-        "messsage": inputMsg,
-        "check_user": true,
-        "time_stamp":Date.now()
-      });
+      // const res = await axios.post("/chats/",{
+      //   "profile_id": auth.currentUser.uid + detailedId,
+      //   "messsage": inputMsg,
+      //   "check_user": true,
+      //   "time_stamp":Date.now()
+      // });
+      let msg = {
+        id: Math.floor(Math.random() * 1000 + 1),
+        body: inputMsg,
+        timeStamp: Date.now(),
+        myMsg: true,
+      };
+      setmessages([...messages, msg]);
       console.log(res.data);
       getChatsResult();
     } catch (error) {
@@ -146,14 +141,21 @@ function Inbox() {
 
   const sendTemplateMsg = async (id) => {
     try {
-      const res = await axios.post("/chats/",{
-        "profile_id": auth.currentUser.uid + detailedId,
-        "messsage": tempDataArray[id-1].body,
-        "check_user": true,
-        "time_stamp":Date.now()
-      });
-      console.log(res.data);
-      getChatsResult();
+      // const res = await axios.post("/chats/",{
+      //   "profile_id": auth.currentUser.uid + detailedId,
+      //   "messsage": tempDataArray[id-1].body,
+      //   "check_user": true,
+      //   "time_stamp":Date.now()
+      // });
+      // console.log(res.data);
+      let msg = {
+        id: Math.floor(Math.random() * 1000 + 1),
+        body: tempDataArray[id - 1].body,
+        timeStamp: Date.now(),
+        myMsg: true,
+      };
+      setmessages([...messages, msg]);
+      // getChatsResult();
     } catch (error) {
       console.log(error.message);
     }
@@ -173,8 +175,8 @@ function Inbox() {
 
   const getMyResult = async () => {
     try {
-      const res = await axios.get("/profile/");
-      setapiData(res.data);
+      // const res = await axios.get("/profile/");
+      // setapiData(res.data);
       setisPending(false);
     } catch (error) {
       console.log(error.message);
@@ -182,15 +184,17 @@ function Inbox() {
   };
   const getChatsResult = async () => {
     try {
-      const res = await axios.get("/chats/");
-      setchatsData(res.data);
-      let arrCopy =[];
-      res.data.forEach(data=>{
-      if(data.profile_id == (auth.currentUser && auth.currentUser.uid) + detailedId){
-        arrCopy.push(data);
-      }
-    })
-    setmessages([...arrCopy]);
+    //   const res = await axios.get("/chats/");
+    //   setchatsData(res.data);
+    //   let arrCopy =[];
+    //   res.data.forEach(data=>{
+    //   if(data.profile_id == (auth.currentUser && auth.currentUser.uid) + detailedId){
+    //     arrCopy.push(data);
+    //   }
+    // })
+    // setmessages([...arrCopy]);
+    let object = chats.find((chat) => chat.chatId - 1 === detailedId);
+    setmessages(object && object.messages);
     } catch (error) {
       console.log(error.message);
     }
@@ -225,7 +229,7 @@ function Inbox() {
           Work Inbox
         </button>
       </div>
-      
+
       </div>
       <div className="relative h-[548px] w-full ">
         <div className="absolute inset-y-0 left-0 w-72 h-full bg-white overflow-auto scrollbar-thin scrollbar-thumb-[#FFD700]  scrollbar-track-white">
@@ -246,7 +250,7 @@ function Inbox() {
               <div
                 key={candidate.id}
                 onClick={() => setdetailedId(candidate.id)}
-                className={`flex p-2  ${
+                className={`flex p-2 cursor-pointer ${
                   detailedId === candidate.id
                     ? "border-2 border-green-800 bg-green-100"
                     : "border"
@@ -255,7 +259,7 @@ function Inbox() {
                 <div className="grid place-items-center w-[40px]">
                   <img
                     className="h-10 w-10 rounded-full object-cover"
-                    src={candidate.image}
+                    src={candidate.imgUrl}
                     alt=""
                   />
                 </div>
@@ -267,7 +271,7 @@ function Inbox() {
                     </div>
                   </div>
                   <div className="font-semibold text-gray-500 text-sm">
-                    {candidate.job_title}
+                    {candidate.jobTitle}
                   </div>
                   <div className="font-semibold text-gray-500 text-sm">
                     message
@@ -283,7 +287,7 @@ function Inbox() {
               <div className="font-bold text-lg">
                 Your application for Job:
                 {apiData[detailedId - 1] &&
-                  apiData[detailedId - 1].job_title}{" "}
+                  apiData[detailedId - 1].jobTitle}{" "}
               </div>
               <div className="font-bold text-gray-500 flex place-items-center">
                 Status:{" "}
@@ -306,17 +310,17 @@ function Inbox() {
               <div
                 key={message.id}
                 className={`space-y-1 my-1 grid ${
-                  message.check_user ? "justify-items-end" : "justify-items-start"
+                  message.myMsg ? "justify-items-end" : "justify-items-start"
                 }`}
               >
                 <div
                   className={`p-2 rounded-lg shadow-lg inline-block max-w-sm  ${
-                    message.check_user? "bg-green-100 text-green-800" : "bg-white"}`}
+                    message.myMsg? "bg-green-100 text-green-800" : "bg-white"}`}
                 >
-                  {<div dangerouslySetInnerHTML={{ __html: message.messsage }} />}
+                  {<div dangerouslySetInnerHTML={{ __html: message.body }} />}
                 </div>
                 <div className="text-sm ">
-                  {timeAgo.format(message.time_stamp)}
+                  {timeAgo.format(message.timeStamp)}
                   {/* {message.time_stamp} */}
                 </div>
               </div>
@@ -378,7 +382,7 @@ function Inbox() {
                 className="h-20 w-20 rounded-full object-cover"
                 src={
                   apiData[detailedId - 1] &&
-                  apiData[detailedId - 1].image
+                  apiData[detailedId - 1].imgUrl
                 }
                 alt=""
               />
@@ -391,6 +395,7 @@ function Inbox() {
               <div className="border rounded-full bg-green-100 text-green-800 border-green-800 font-semibold text-xs px-2 py-1">
               {apiData[detailedId - 1] &&
                 apiData[detailedId - 1].status}
+                Active
               </div>
               <div className="font-semibold text-gray-500">{apiData[detailedId - 1] &&
                 apiData[detailedId - 1].origin}</div>
@@ -407,7 +412,7 @@ function Inbox() {
               <div className="font-bold">
                 Job:
                 {apiData[detailedId - 1] &&
-                  apiData[detailedId - 1].job_title}
+                  apiData[detailedId - 1].jobTitle}
               </div>
             </div>
             <div>
@@ -426,8 +431,9 @@ function Inbox() {
             </div>
             <div className="font-bold text-gray-500 flex gap-2 place-items-center">
               <AiOutlinePhone />
-              {apiData[detailedId - 1] &&
-                  apiData[detailedId - 1].phonenumber}
+              {/* {apiData[detailedId - 1] &&
+                  apiData[detailedId - 1].phonenumber} */}
+                  5468796123
             </div>
           </div>
           <div className="border p-4 space-y-4">

@@ -4,6 +4,7 @@ import {  AiOutlineMail } from "react-icons/ai";
 import { HiOutlineChevronRight } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { ScaleLoader } from "react-spinners";
+import {employeeData} from "../data/dummy";
 
 const EmployeeDetailed = ({ func, detailed, id }) => {
   const [tabs, settabs] = useState(1);
@@ -11,9 +12,11 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
   const [apiData, setapiData] = useState({});
   const getMyResult = async () => {
     try {
-      const res = await axios.get(`/employee/${id}`);
-      console.log(res.data);
-      setapiData(res.data);
+      // const res = await axios.get(`/employee/${id}`);
+      // console.log(res.data);
+      // setapiData(res.data);
+      const res = await employeeData.find((item) => item.id === id);
+      setapiData(res);
       setisPending(false);
     } catch (error) {
       console.log(error.message);
@@ -27,7 +30,7 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
 
   useEffect(() => {
   }, [isPending])
-  
+
 
   return (
     <div
@@ -50,8 +53,8 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
             <div>
               <img
                 className="h-20 w-20 rounded-full object-cover"
-                src={apiData && apiData.image}
-                alt=""
+                src={apiData && apiData.imgUrl}
+                alt="profile"
               />
             </div>
 
@@ -60,7 +63,7 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                 {apiData && apiData.name}
               </div>
               <div className="font-bold uppercase text-sm flex place-items-center text-gray-500">
-                {apiData && 
+                {apiData &&
                     <div className={`
                     ${apiData.status==="Active" && "border border-green-600 px-2 py-1 bg-green-200 rounded-md text-xs font-bold text-green-600" }
                     ${apiData.status==="Inactive" && "border border-red-600 px-2 py-1 bg-red-200 bg rounded-md text-xs font-bold text-red-600" }
@@ -69,12 +72,12 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                       {apiData && apiData.status}
                       {" "}
                     </div>
-                } - 
+                } -
                 <div>{" "}{apiData && apiData.team}</div>
-                
+
               </div>
               <div className="font-bold  text-sm text-gray-500">
-               Hired Date {apiData && apiData.hired_date}
+               Hired Date {apiData && apiData.hiredDate}
               </div>
             </div>
           </div>
@@ -126,12 +129,15 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                 </div>
               </div>
               <div>
-                <div className="font-bold text-sm text-gray-500">Origin</div>
-                <div className="font-bold">Sourced</div>
+                <div className="font-bold text-sm text-gray-500">Address</div>
+                <div className="font-bold">xyz street, NY </div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">Phone</div>
-                <div className="font-bold">{apiData && apiData.phone}</div>
+                <div className="font-bold">
+                  {/* {apiData && apiData.phone} */}
+                  5462301478
+                </div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
@@ -151,7 +157,8 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
               <div>
                 <div className="font-bold text-sm text-gray-500">Address</div>
                 <div className="font-bold">
-                {apiData && apiData.address}
+                {/* {apiData && apiData.address} */}
+                  xyz street, Ny
                 </div>
               </div>
             </div>
@@ -166,7 +173,7 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
                 <div className="font-bold text-sm text-gray-500">
                   Current Job Title
                 </div>
-                <div className="font-bold">{apiData && apiData.job_title}</div>
+                <div className="font-bold">{apiData && apiData.jobTitle}</div>
               </div>
               <div>
                 <div className="font-bold text-sm text-gray-500">
@@ -204,17 +211,18 @@ const EmployeeDetailed = ({ func, detailed, id }) => {
               <div>
                 <div className="font-bold text-sm text-gray-500">Skills</div>
                 <div className="flex my-2 gap-2">
-                {apiData.skills && apiData.skills.map(skill=>(
-                  <div key={skill.id} className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500">
-                  {skill}
+                {/* {apiData.skills && apiData.skills.map(skill=>( */}
+                  <div className="rounded-full bg-gray-300 text-sm font-bold p-2 text-md text-gray-500">
+                  {/* {skill} */}
+                  React
                 </div>
-                ))}
+                {/* ))} */}
                 </div>
               </div>
             </div>
           </div>
         </div>
-        
+
         <button
           className="bg-gray-300 py-2 fixed top-2/4 left-0 my-auto"
           onClick={() => func(false)}
