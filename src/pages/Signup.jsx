@@ -28,14 +28,15 @@ const Signup = () => {
   //   const getToken = queryParameters.get("token");
   //   setparamToken(getToken);
   // }, [paramToken])
-  
+
 
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setisPending(true);
-    // signUp(email, password);
-    getMyResult(queryParameters.get("token"));
+    signUp(email, password);
+    // console.log(queryParameters.get("token"), queryParameters);
+    // getMyResult(queryParameters.get("token"));
     setemail("");
     setpassword("");
   };
@@ -67,7 +68,7 @@ const Signup = () => {
 
   const getMyResult = async (accToken) => {
     try {
-      const res = await axios.post(`http://44.204.133.124/api/v1/team/createhrmuser?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inlhc2hiYXJtYW4zMDEwQGdtYWlsLmNvbSIsInJvbGUiOiJhc3Npc3RhbnQgaHIgbWFuYWdlciIsImlhdCI6MTY4MDc5MTc1NywiZXhwIjoxNjgwNzk1MzU3fQ.If69ha35YHD8zIHst5n2mfwe1-G9z15ZJbHYuYWeDiQ`, {
+      const res = await axios.post(`https://bdmhrmnode.bigbros.link/api/v1/team/createhrmuser?token=${accToken}`, {
         email,
         role:"hr",
         name,
@@ -75,6 +76,9 @@ const Signup = () => {
         display_picture: file
     });
       console.log(res.data);
+      localStorage.setItem("access_token", res.data.data.access_token);
+      localStorage.setItem("refresh_token", res.data.data.refresh_token);
+      navigate("/");
     } catch (error) {
       console.log(error.message);
     }

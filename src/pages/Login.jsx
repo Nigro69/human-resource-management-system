@@ -5,6 +5,7 @@ import { auth } from "../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { getToken,storeToken } from "../LocalStorage";
 import { PropagateLoader } from 'react-spinners';
+// import axios from 'axios';
 
 const Login = () => {
 
@@ -16,7 +17,7 @@ const Login = () => {
     const [password, setpassword] = useState("");
     const [isPending, setisPending] = useState(false);
     const [erroeMessage, seterroeMessage] = useState(false);
-  
+
     const handleSubmit = (e) => {
       e.preventDefault();
       setisPending(true);
@@ -40,8 +41,22 @@ const Login = () => {
           seterroeMessage(true);
           setisPending(false);
         }
+
+        // try {
+        //   const res = await axios.post(`https://bdmhrmnode.bigbros.link/api/v1/team/hrmlogin`, {
+        //     email,
+        //     role:"hr",
+        //     password,
+        // });
+        //   console.log(res.data);
+        //   localStorage.setItem("access_token", res.data.data.access_token);
+        //   localStorage.setItem("refresh_token", res.data.data.refresh_token);
+        //   navigate("/");
+        // } catch (error) {
+        //   console.log(error.message);
+        // }
       };
-    
+
       useEffect(() => {
         const yash = getToken();
         setauthToken(yash);
